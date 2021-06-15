@@ -1,4 +1,4 @@
-import {getRandomPositiveFloat, getRandomPositiveInteger} from './get-randon-number.js';
+import {getRandomPositiveFloat, getRandomPositiveInteger} from './utils.js';
 
 const MIN_NUMBER_USER = 1;
 const MAX_NUMBER_USER = 8;
