@@ -21,7 +21,7 @@ const types = {
 const fillContent = (selector, content)=> {
   const element = advertisementItem.querySelector(selector);
 
-  if (content === ' ') {
+  if (content === '') {
     element.remove();
   } else {
     element.textContent = content;
