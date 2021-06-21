@@ -1,9 +1,3 @@
-import {createAdvertisement} from'./data.js';
-
-const SIMILAR_ADVERTISEMENT_COUNT = 10;
-const similarAdvertisiment = new Array(SIMILAR_ADVERTISEMENT_COUNT).fill(null).map(() => createAdvertisement());
-const map = document.querySelector('#map-canvas');
-const similarList = [];
 const templateCard = document.querySelector('#card').content.querySelector('.popup');
 const advertisementItem = templateCard.cloneNode(true);
 const featuresList = advertisementItem.querySelector('.popup__features');
@@ -28,8 +22,8 @@ const fillContent = (selector, content)=> {
   }
 };
 
-similarAdvertisiment.forEach((element)=> {
-  const offer = element.offer;
+const createElement = (advertisement)=> {
+  const offer = advertisement.offer;
   let textRooms = ' комнаты';
   let textGuests = '';
 
@@ -82,8 +76,9 @@ similarAdvertisiment.forEach((element)=> {
     photosList.appendChild(photoElement);
   });
 
-  avatar.setAttribute('src', element.author.avatar);
+  avatar.setAttribute('src', advertisement.author.avatar);
 
-  similarList.push(advertisementItem);
-  map.appendChild(similarList[0]);
-});
+  return advertisementItem;
+};
+
+export {createElement};
