@@ -1,3 +1,5 @@
+import {declineOfNum} from './utils.js';
+
 const templateCard = document.querySelector('#card').content.querySelector('.popup');
 const advertisementItem = templateCard.cloneNode(true);
 const featuresList = advertisementItem.querySelector('.popup__features');
@@ -24,24 +26,15 @@ const fillContent = (selector, content)=> {
 
 const createElement = (advertisement)=> {
   const offer = advertisement.offer;
-  let textRooms = ' комнаты';
-  let textGuests = '';
+  const roomsExpressions = [' комната', ' комнаты', ' комнат'];
+  const guestsExpression = [' гостя', ' гостей', ' гостей'];
+  const textRooms = declineOfNum(offer.rooms, roomsExpressions);
+  const textGuests = declineOfNum(offer.guests, guestsExpression);
 
   fillContent('.popup__title', offer.title);
   fillContent('.popup__text--address', offer.address);
   fillContent('.popup__text--price', `${offer.price} ₽/ночь`);
   fillContent('.popup__type', types[offer.type]);
-
-  switch (offer.rooms) {
-    case 1:
-      textRooms = ' комната';
-      break;
-    case 5:
-      textRooms = ' комнат';
-      break;
-  }
-
-  offer.guests === 1 ? textGuests = ' гостя' : ' гостей';
 
   fillContent('.popup__text--capacity', `${offer.rooms} ${textRooms} для ${offer.guests} ${textGuests}`);
   fillContent('.popup__text--time', `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`);
