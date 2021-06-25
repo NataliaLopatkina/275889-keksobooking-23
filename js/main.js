@@ -1,18 +1,17 @@
 import {createAdvertisement} from'./data.js';
 import {createElement} from './create-similar-element.js';
-import {addInactiveState} from './change-state.js';
+import {addInactiveState, addActiveState} from './change-state.js';
 import './form/form.js';
-import './map.js';
+import {initMap, showMainMarker, showSimilarMarkers, mainMarker} from './map.js';
 
+const fieldAddress = document.querySelector('#address');
 addInactiveState();
 
 const SIMILAR_ADVERTISEMENT_COUNT = 10;
 const similarAdvertisiment = new Array(SIMILAR_ADVERTISEMENT_COUNT).fill(null).map(() => createAdvertisement());
-const map = document.querySelector('#map-canvas');
-const similarListAdvertisiment = [];
 
-similarAdvertisiment.forEach((advertisiment)=> {
-  similarListAdvertisiment.push(createElement(advertisiment));
-});
+initMap(addActiveState());
+showMainMarker();
+showSimilarMarkers(similarAdvertisiment, createElement);
 
-map.appendChild(similarListAdvertisiment[0]);
+mainMarker.on('moveend', (evt) => fieldAddress.value = evt.target.getLatLng());

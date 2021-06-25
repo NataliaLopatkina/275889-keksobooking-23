@@ -1,40 +1,32 @@
 const adForm = document.querySelector('.ad-form');
-const formFieldset = adForm.querySelectorAll('fieldset');
 const filters = document.querySelector('.map__filters');
-const filtersFieldset = filters.querySelector('fieldset');
 
 const disableForm = (form) => {
+  const children = form.children;
   form.classList.add('ad-form--disabled');
-};
 
-const disableFielset = (fieldset) => {
-  fieldset.forEach((item)=> {
-    item.disabled = true;
-  });
+  for (let index = 0; index < children.length; index++) {
+    children[index].disabled = true;
+  }
 };
 
 const enableForm = (form) => {
+  const children = form.children;
   form.classList.remove('ad-form--disabled');
-};
 
-const enableFielset = (fieldset) => {
-  fieldset.forEach((item)=> {
-    item.disabled = false;
-  });
+  for (let index = 0; index < children.length; index++) {
+    children[index].disabled = false;
+  }
 };
 
 const addInactiveState = () => {
   disableForm(adForm);
-  disableFielset(formFieldset);
   disableForm(filters);
-  disableFielset(filtersFieldset);
 };
 
 const addActiveState = () => {
   enableForm(adForm);
-  enableFielset(formFieldset);
   enableForm(filters);
-  enableFielset(filtersFieldset);
 };
 
 export {addInactiveState, addActiveState};
