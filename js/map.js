@@ -1,11 +1,15 @@
+import {createElement} from './create-similar-element.js';
+import {createAdvertisement} from "./data.js";
+
+const SIMILAR_ADVERTISEMENT_COUNT = 10;
+const similarAdvertisiment = new Array(SIMILAR_ADVERTISEMENT_COUNT).fill(null).map(() => createAdvertisement());
+
 let map;
 let mainMarker;
 
 const initMap = (callback)=> {
-  const map = L.map('map-canvas')
-    .on('load', () => {
-      callback;
-    })
+
+  map = L.map('map-canvas')
     .setView({
       lat: 35.6895,
       lng: 139.692,
@@ -16,10 +20,11 @@ const initMap = (callback)=> {
     {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     },
-  ).addTo(map);
-};
-
-const showMainMarker = ()=> {
+  )
+    .addTo(map)
+    .on('load', ()=> {
+    callback();
+  })
   const mainPinIcon = L.icon({
     iconUrl: '../../img/main-pin.svg',
     iconSize: [52, 52],
@@ -35,12 +40,10 @@ const showMainMarker = ()=> {
       draggable: true,
       icon: mainPinIcon,
     },
-  );
-  mainMarker.addTo(map);
-};
+  )
+  .addTo(map)
 
-const showSimilarMarkers = (points, callback)=> {
-  points.forEach((item)=> {
+  similarAdvertisiment.forEach((item)=> {
 
     const icon = L.icon({
       iconUrl: '../../img/pin.svg',
@@ -62,12 +65,13 @@ const showSimilarMarkers = (points, callback)=> {
     marker
       .addTo(map)
       .bindPopup(
-        callback(item),
-        {
-          keepInView: true,
-        },
+        createElement(item)
       );
   });
-};
+}
 
-export {initMap, showMainMarker, showSimilarMarkers, mainMarker};
+const getMarker = () => {
+  return mainMarker;
+}
+
+export {initMap, getMarker};
