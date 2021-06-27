@@ -7,12 +7,12 @@ const similarAdvertisiment = new Array(SIMILAR_ADVERTISEMENT_COUNT).fill(null).m
 let map;
 let mainMarker;
 
-const initMap = (callback)=> {
+const initMap = (callback, lat, lng) => {
 
   map = L.map('map-canvas')
     .setView({
-      lat: 35.6895,
-      lng: 139.692,
+      lat: lat,
+      lng: lng,
     }, 10);
 
   L.tileLayer(
@@ -22,9 +22,9 @@ const initMap = (callback)=> {
     },
   )
     .addTo(map)
-    .on('load', ()=> {
-    callback();
-  })
+    .on('load', () => {
+      callback();
+    })
   const mainPinIcon = L.icon({
     iconUrl: '../../img/main-pin.svg',
     iconSize: [52, 52],
@@ -33,17 +33,17 @@ const initMap = (callback)=> {
 
   mainMarker = L.marker(
     {
-      lat: 35.6895,
-      lng: 139.692,
+      lat: lat,
+      lng: lng,
     },
     {
       draggable: true,
       icon: mainPinIcon,
     },
   )
-  .addTo(map)
+    .addTo(map)
 
-  similarAdvertisiment.forEach((item)=> {
+  similarAdvertisiment.forEach((item) => {
 
     const icon = L.icon({
       iconUrl: '../../img/pin.svg',
@@ -74,4 +74,11 @@ const getMarker = () => {
   return mainMarker;
 }
 
-export {initMap, getMarker};
+const setDefaultPositionMarker = (lat,lng) => {
+  mainMarker.setLatLng({
+    lat: lat,
+    lng: lng,
+  });
+};
+
+export {initMap, getMarker, setDefaultPositionMarker};

@@ -32,4 +32,8 @@ const declineOfNum = (num, expressions)=> {
   return result;
 };
 
-export {getRandomPositiveFloat, getRandomPositiveInteger, declineOfNum};
+const isEscEvent = (evt) => {
+  return evt.key === 'Escape' || evt.key === 'Esc';
+};
+
+export {getRandomPositiveFloat, getRandomPositiveInteger, declineOfNum, isEscEvent};

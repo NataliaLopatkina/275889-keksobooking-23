@@ -1,6 +1,10 @@
+import {declineOfNum} from './utils.js';
+
 const titleInput = document.querySelector('#title');
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
+// const DEFAULT_ADDRESS = '35.6895, 139.692';
+const address = document.querySelector('#address');
 const type = document.querySelector('#type');
 const typeOptions = type.querySelectorAll('option');
 const MAX_PRICE = 1000000;
@@ -73,14 +77,20 @@ const changeValue = (field, relatedField) => {
   toggleSelected(timeOutOptions, relatedField);
 };
 
+const setDefaultAddress = (addr) => {
+  address.value = addr;
+};
+
+// setDefaultAddress();
+
 titleInput.addEventListener('invalid', () => {
   checkFillField(titleInput);
 });
 
 titleInput.addEventListener('input', () => {
   const valueField = titleInput.value.length;
-  const minMessage = `Ещё ${  MIN_TITLE_LENGTH - valueField } симв.`;
-  const maxMessage = `Удалите лишние ${  valueField - MAX_TITLE_LENGTH } симв.`;
+  const minMessage = `Ещё ${MIN_TITLE_LENGTH - valueField} симв.`;
+  const maxMessage = `Удалите лишние ${valueField - MAX_TITLE_LENGTH} симв.`;
   checkValueField(titleInput, valueField, MIN_TITLE_LENGTH, MAX_TITLE_LENGTH, minMessage, maxMessage);
 });
 
@@ -114,31 +124,31 @@ timeOut.addEventListener('change', () => {
   changeValue(timeOut, timeIn);
 });
 
-roomNumber.addEventListener('change', (evt)=> {
+roomNumber.addEventListener('change', (evt) => {
   const roomNumberValue = evt.target.value;
   const capacityList = roomNumberList[roomNumberValue];
-  const capacityOptions = capacity.querySelector('option');
+  const capacityOptions = capacity.querySelectorAll('option');
+  const guestsExpression = [' гостя', ' гостей', ' гостей'];
 
-  capacityOptions.remove();
+  capacityOptions.forEach((item) => {
+    item.remove();
+  });
 
-  capacityList.forEach((item)=> {
-    let capacityText = 'для 1 гостя';
-    switch (roomNumberValue) {
-      case '2':
-      case '3':
-        capacityText = `для ${item} гостей`;
-        break;
-      case '100':
-        capacityText = item;
-        break;
-    }
-
+  capacityList.forEach((item) => {
+    const textGuests = declineOfNum(item, guestsExpression);
     const newOption = document.createElement('option');
     newOption.value = item;
-    newOption.textContent = capacityText;
+    newOption.textContent = `для ${item} ${textGuests}`;
+
+    if (roomNumberValue === '100') {
+      newOption.textContent = 'не для гостей';
+    }
 
     capacity.appendChild(newOption);
-    toggleSelected(roomNumberOptions, evt.target);
-    toggleSelected(capacityOptionsList, capacity);
   });
+
+  toggleSelected(roomNumberOptions, evt.target);
+  toggleSelected(capacityOptionsList, capacity);
 });
+
+export {setDefaultAddress};

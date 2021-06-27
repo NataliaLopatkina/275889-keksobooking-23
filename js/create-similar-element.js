@@ -14,7 +14,7 @@ const types = {
   'hotel': 'Отель',
 };
 
-const fillContent = (selector, content)=> {
+const fillContent = (selector, content) => {
   const element = advertisementItem.querySelector(selector);
 
   if (content === '') {
@@ -24,7 +24,7 @@ const fillContent = (selector, content)=> {
   }
 };
 
-const createElement = (advertisement)=> {
+const createElement = (advertisement) => {
   const offer = advertisement.offer;
   const roomsExpressions = [' комната', ' комнаты', ' комнат'];
   const guestsExpression = [' гостя', ' гостей', ' гостей'];
@@ -41,11 +41,11 @@ const createElement = (advertisement)=> {
 
   const featuresItems = featuresList.querySelectorAll('.popup__feature');
 
-  featuresItems.forEach((feature)=> {
+  featuresItems.forEach((feature) => {
     feature.remove();
   });
 
-  offer.features.forEach((feature)=> {
+  offer.features.forEach((feature) => {
     const featureElement = document.createElement('li');
     featureElement.classList.add('popup__feature', `popup__feature--${feature}`);
     featuresList.appendChild(featureElement);
@@ -54,11 +54,11 @@ const createElement = (advertisement)=> {
   fillContent('.popup__description', offer.description);
 
   const photoItem = photosList.querySelectorAll('.popup__photo');
-  photoItem.forEach((photo)=> {
+  photoItem.forEach((photo) => {
     photo.remove();
   });
 
-  offer.photos.forEach((photo)=> {
+  offer.photos.forEach((photo) => {
     const photoElement = document.createElement('img');
     photoElement.setAttribute('src', photo);
     photoElement.classList.add('popup__photo');

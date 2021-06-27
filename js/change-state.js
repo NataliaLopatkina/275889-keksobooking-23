@@ -1,3 +1,6 @@
+import {setDefaultPositionMarker} from "./map.js";
+import {setDefaultAddress} from "./form.js";
+
 const adForm = document.querySelector('.ad-form');
 const filters = document.querySelector('.map__filters');
 
@@ -29,4 +32,11 @@ const addActiveState = () => {
   enableForm(filters);
 };
 
-export {addInactiveState, addActiveState};
+const setDefaultState = (lat, lng) => {
+  adForm.reset();
+  filters.reset();
+  setDefaultPositionMarker(lat, lng);
+  setDefaultAddress(`${lat}, ${lng}`);
+};
+
+export {addInactiveState, addActiveState, setDefaultState};
