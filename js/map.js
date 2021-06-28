@@ -1,13 +1,92 @@
-import {createElement} from './create-similar-element.js';
-import {createAdvertisement} from "./data.js";
-
-const SIMILAR_ADVERTISEMENT_COUNT = 10;
-const similarAdvertisiment = new Array(SIMILAR_ADVERTISEMENT_COUNT).fill(null).map(() => createAdvertisement());
+import {declinationOfNum} from './utils.js';
 
 let map;
-let mainMarker;
 
-const initMap = (callback)=> {
+const createSimilarAdvertisiment = (advertisement)=> {
+  const ROOMS_DICT = {
+    single: 'комната',
+    several: 'комнаты',
+    many: 'комнат',
+  };
+
+  const GUESTS_DICT = {
+    single: 'гостя',
+    several: 'гостей',
+    many: 'гостей',
+  };
+
+  const templateCard = document.querySelector('#card').content.querySelector('.popup');
+  const advertisementItem = templateCard.cloneNode(true);
+  const featuresList = advertisementItem.querySelector('.popup__features');
+  const photosList = advertisementItem.querySelector('.popup__photos');
+  const avatar = advertisementItem.querySelector('.popup__avatar');
+
+  const types = {
+    'flat': 'Квартира',
+    'bungalow': 'Бунгало',
+    'house': 'Дом',
+    'palace': 'Дворец',
+    'hotel': 'Отель',
+  };
+
+  const fillContent = (selector, content)=> {
+    const element = advertisementItem.querySelector(selector);
+
+    if (content === '') {
+      element.remove();
+    } else {
+      element.textContent = content;
+    }
+  };
+
+  const offer = advertisement.offer;
+  const textRooms = declinationOfNum(offer.rooms, ROOMS_DICT);
+  const textGuests = declinationOfNum(offer.guests, GUESTS_DICT);
+
+  fillContent('.popup__title', offer.title);
+  fillContent('.popup__text--address', offer.address);
+  fillContent('.popup__text--price', `${offer.price} ₽/ночь`);
+  fillContent('.popup__type', types[offer.type]);
+
+  fillContent('.popup__text--capacity', `${offer.rooms} ${textRooms} для ${offer.guests} ${textGuests}`);
+  fillContent('.popup__text--time', `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`);
+
+  const featuresItems = featuresList.querySelectorAll('.popup__feature');
+
+  featuresItems.forEach((feature)=> {
+    feature.remove();
+  });
+
+  offer.features.forEach((feature)=> {
+    const featureElement = document.createElement('li');
+    featureElement.classList.add('popup__feature', `popup__feature--${feature}`);
+    featuresList.appendChild(featureElement);
+  });
+
+  fillContent('.popup__description', offer.description);
+
+  const photoItem = photosList.querySelectorAll('.popup__photo');
+  photoItem.forEach((photo)=> {
+    photo.remove();
+  });
+
+  offer.photos.forEach((photo)=> {
+    const photoElement = document.createElement('img');
+    photoElement.setAttribute('src', photo);
+    photoElement.classList.add('popup__photo');
+    photoElement.setAttribute('width', '45');
+    photoElement.setAttribute('height', '40');
+    photoElement.setAttribute('alt', 'Фотография жилья');
+
+    photosList.appendChild(photoElement);
+  });
+
+  avatar.setAttribute('src', advertisement.author.avatar);
+
+  return advertisementItem;
+};
+
+const initMap = (callback, points)=> {
 
   map = L.map('map-canvas')
     .setView({
@@ -22,28 +101,12 @@ const initMap = (callback)=> {
     },
   )
     .addTo(map)
-    .on('load', ()=> {
-    callback();
-  })
-  const mainPinIcon = L.icon({
-    iconUrl: '../../img/main-pin.svg',
-    iconSize: [52, 52],
-    iconAnchor: [26, 52],
-  });
+    .on('load', ()=>{
+      callback();
 
-  mainMarker = L.marker(
-    {
-      lat: 35.6895,
-      lng: 139.692,
-    },
-    {
-      draggable: true,
-      icon: mainPinIcon,
-    },
-  )
-  .addTo(map)
+    });
 
-  similarAdvertisiment.forEach((item)=> {
+  points.forEach((item)=> {
 
     const icon = L.icon({
       iconUrl: '../../img/pin.svg',
@@ -65,13 +128,31 @@ const initMap = (callback)=> {
     marker
       .addTo(map)
       .bindPopup(
-        createElement(item)
+        createSimilarAdvertisiment(item),
       );
   });
-}
+};
 
-const getMarker = () => {
+const getMainMarker = ()=> {
+  const mainPinIcon = L.icon({
+    iconUrl: '../../img/main-pin.svg',
+    iconSize: [52, 52],
+    iconAnchor: [26, 52],
+  });
+
+  const mainMarker = L.marker(
+    {
+      lat: 35.6895,
+      lng: 139.692,
+    },
+    {
+      draggable: true,
+      icon: mainPinIcon,
+    },
+  )
+    .addTo(map);
+
   return mainMarker;
-}
+};
 
-export {initMap, getMarker};
+export {initMap, getMainMarker};
