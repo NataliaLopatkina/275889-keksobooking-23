@@ -1,5 +1,7 @@
-import {declinationOfNum} from './utils.js';
+import {declinationOfNum, showAlert} from './utils.js';
+import {getData} from './api.js';
 
+const SIMILAR_ADVERTISEMENT_COUNT = 10;
 let map;
 
 const createSimilarAdvertisiment = (advertisement)=> {
@@ -32,7 +34,7 @@ const createSimilarAdvertisiment = (advertisement)=> {
   const fillContent = (selector, content)=> {
     const element = advertisementItem.querySelector(selector);
 
-    if (content === '') {
+    if (content === undefined) {
       element.remove();
     } else {
       element.textContent = content;
@@ -57,11 +59,15 @@ const createSimilarAdvertisiment = (advertisement)=> {
     feature.remove();
   });
 
-  offer.features.forEach((feature)=> {
-    const featureElement = document.createElement('li');
-    featureElement.classList.add('popup__feature', `popup__feature--${feature}`);
-    featuresList.appendChild(featureElement);
-  });
+  if (offer.features !== undefined) {
+    offer.features.forEach((feature)=> {
+      const featureElement = document.createElement('li');
+      featureElement.classList.add('popup__feature', `popup__feature--${feature}`);
+      featuresList.appendChild(featureElement);
+    });
+  } else {
+    featuresList.remove();
+  }
 
   fillContent('.popup__description', offer.description);
 
@@ -70,23 +76,27 @@ const createSimilarAdvertisiment = (advertisement)=> {
     photo.remove();
   });
 
-  offer.photos.forEach((photo)=> {
-    const photoElement = document.createElement('img');
-    photoElement.setAttribute('src', photo);
-    photoElement.classList.add('popup__photo');
-    photoElement.setAttribute('width', '45');
-    photoElement.setAttribute('height', '40');
-    photoElement.setAttribute('alt', 'Фотография жилья');
+  if (offer.photos !== undefined) {
+    offer.photos.forEach((photo)=> {
+      const photoElement = document.createElement('img');
+      photoElement.setAttribute('src', photo);
+      photoElement.classList.add('popup__photo');
+      photoElement.setAttribute('width', '45');
+      photoElement.setAttribute('height', '40');
+      photoElement.setAttribute('alt', 'Фотография жилья');
 
-    photosList.appendChild(photoElement);
-  });
+      photosList.appendChild(photoElement);
+    });
+  } else {
+    photosList.remove();
+  }
 
   avatar.setAttribute('src', advertisement.author.avatar);
 
   return advertisementItem;
 };
 
-const initMap = (callback, points)=> {
+const initMap = (callback)=> {
 
   map = L.map('map-canvas')
     .setView({
@@ -106,31 +116,42 @@ const initMap = (callback, points)=> {
 
     });
 
-  points.forEach((item)=> {
+  getData(
+    (advertisements) => {
+      const points = advertisements.slice(0, SIMILAR_ADVERTISEMENT_COUNT);
 
-    const icon = L.icon({
-      iconUrl: '../../img/pin.svg',
-      iconSize: [40, 40],
-      iconAnchor: [20, 40],
-    });
-    const lat = item.location.lat;
-    const lng = item.location.lng;
-    const marker = L.marker(
-      {
-        lat,
-        lng,
-      },
-      {
-        icon,
-      },
-    );
+      
 
-    marker
-      .addTo(map)
-      .bindPopup(
-        createSimilarAdvertisiment(item),
-      );
-  });
+      points.forEach((item)=> {
+
+        const icon = L.icon({
+          iconUrl: '../../img/pin.svg',
+          iconSize: [40, 40],
+          iconAnchor: [20, 40],
+        });
+        const lat = item.location.lat;
+        const lng = item.location.lng;
+        const marker = L.marker(
+          {
+            lat,
+            lng,
+          },
+          {
+            icon,
+          },
+        );
+
+        marker
+          .addTo(map)
+          .bindPopup(
+            createSimilarAdvertisiment(item),
+          );
+      });
+    },
+    () => {
+        showAlert('Произошла ошибка гагрузки данных. Попробуйте позже');
+    }
+  );
 };
 
 const getMainMarker = ()=> {
