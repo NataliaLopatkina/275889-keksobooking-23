@@ -81,6 +81,10 @@ const changeValue = (field, relatedField) => {
   toggleSelected(timeOutOptions, relatedField);
 };
 
+const setDefaultAddress = (addr) => {
+  address.value = addr;
+};
+
 titleInput.addEventListener('invalid', () => {
   checkFillField(titleInput);
 });
@@ -151,3 +155,5 @@ capacity.addEventListener('change', (evt)=> {
   capacityOptionsList = capacity.querySelectorAll('option');
   toggleSelected(capacityOptionsList, evt.target);
 });
+
+export {setDefaultAddress};

@@ -96,7 +96,7 @@ const createSimilarAdvertisiment = (advertisement)=> {
   return advertisementItem;
 };
 
-const initMap = (callback)=> {
+const initMap = (callback, lat, lng)=> {
 
   map = L.map('map-canvas')
     .setView({
@@ -152,6 +152,8 @@ const initMap = (callback)=> {
         showAlert('Произошла ошибка гагрузки данных. Попробуйте позже');
     }
   );
+
+  initMarker(lat, lng);
 };
 
 const getMainMarker = ()=> {
@@ -170,10 +172,20 @@ const getMainMarker = ()=> {
       draggable: true,
       icon: mainPinIcon,
     },
-  )
-    .addTo(map);
+  );
 
   return mainMarker;
 };
 
-export {initMap, getMainMarker};
+const initMarker = (lat, lng)=> {
+    getMainMarker(lat, lng).addTo(map);
+}
+
+const setDefaultPositionMarker = (lat,lng) => {
+  getMainMarker(lat, lng).setLatLng({
+    lat: lat,
+    lng: lng,
+  });
+};
+
+export {initMap, setDefaultPositionMarker, getMainMarker};

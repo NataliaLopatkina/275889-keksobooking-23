@@ -46,4 +46,6 @@ const showAlert = (message) => {
   }, ALERT_SHOW_TIME);
 };
 
-export {getRandomPositiveFloat, getRandomPositiveInteger, declinationOfNum, showAlert};
+const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
+export {getRandomPositiveFloat, getRandomPositiveInteger, declinationOfNum, showAlert, isEscEvent};

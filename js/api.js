@@ -4,9 +4,9 @@ const getData = (onSuccess, onFail) => {
     .then((advertisiments) => {
       onSuccess(advertisiments);
     })
-    .catch(()=> {
-      onFail();
-    });
+    // .catch(()=> {
+    //   onFail();
+    // });
 };
 
 const sendData = (onSuccess, onFail, body) => {
