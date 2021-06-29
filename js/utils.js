@@ -14,4 +14,13 @@ const getRandomPositiveFloat = (min, max, digits = 1)=> {
   return result.toFixed(digits);
 };
 
-export {getRandomPositiveFloat, getRandomPositiveInteger};
+const declinationOfNum = (num, dict)=> {
+  if (num % 10 === 1 && num % 100 !== 11) {
+    return dict.single;
+  } else if (num % 10 >= 2 && num % 10 <= 4 && (num % 100 < 10 || num % 100 >= 20)) {
+    return dict.several;
+  }
+  return dict.many;
+};
+
+export {getRandomPositiveFloat, getRandomPositiveInteger, declinationOfNum};

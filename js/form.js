@@ -1,3 +1,5 @@
+import {declinationOfNum} from './utils.js';
+
 const titleInput = document.querySelector('#title');
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -12,7 +14,13 @@ const timeOutOptions = timeOut.querySelectorAll('option');
 const roomNumber = document.querySelector('#room_number');
 const roomNumberOptions = roomNumber.querySelectorAll('option');
 const capacity = document.querySelector('#capacity');
-const capacityOptionsList = capacity.querySelectorAll('option');
+let capacityOptionsList = capacity.querySelectorAll('option');
+
+const GUESTS_DICT = {
+  single: 'гостя',
+  several: 'гостей',
+  many: 'гостей',
+};
 
 const priceList = {
   'bungalow': 0,
@@ -117,20 +125,16 @@ timeOut.addEventListener('change', () => {
 roomNumber.addEventListener('change', (evt)=> {
   const roomNumberValue = evt.target.value;
   const capacityList = roomNumberList[roomNumberValue];
-  const capacityOptions = capacity.querySelector('option');
+  const capacityOptions = capacity.querySelectorAll('option');
 
-  capacityOptions.remove();
+  capacityOptions.forEach((item)=> {
+    item.remove();
+  });
 
   capacityList.forEach((item)=> {
-    let capacityText = 'для 1 гостя';
-    switch (roomNumberValue) {
-      case '2':
-      case '3':
-        capacityText = `для ${item} гостей`;
-        break;
-      case '100':
-        capacityText = item;
-        break;
+    let capacityText = `для ${item} ${declinationOfNum(item, GUESTS_DICT)}`;
+    if (roomNumberValue === '100') {
+      capacityText = 'не для гостей';
     }
 
     const newOption = document.createElement('option');
@@ -138,7 +142,12 @@ roomNumber.addEventListener('change', (evt)=> {
     newOption.textContent = capacityText;
 
     capacity.appendChild(newOption);
-    toggleSelected(roomNumberOptions, evt.target);
-    toggleSelected(capacityOptionsList, capacity);
   });
+  toggleSelected(roomNumberOptions, evt.target);
+  toggleSelected(capacityOptionsList, capacity);
+});
+
+capacity.addEventListener('change', (evt)=> {
+  capacityOptionsList = capacity.querySelectorAll('option');
+  toggleSelected(capacityOptionsList, evt.target);
 });
