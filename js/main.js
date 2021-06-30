@@ -1,6 +1,6 @@
 import {addInactiveState, addActiveState, setDefaultState} from './change-state.js';
-import './form.js';
-import {initMap, getMainMarker} from './map.js';
+import {setAdFormSubmit} from './form.js';
+import {initMap, setValueField, initMainMarker} from './map.js';
 import {showErrorMsg, showSuccessMsg, initMessages} from './message.js';
 
 const DEFAULT_LAT = 35.6895;
@@ -11,13 +11,19 @@ const resetBtn = document.querySelector('.ad-form__reset');
 
 addInactiveState();
 initMap(addActiveState, DEFAULT_LAT, DEFAULT_LNG);
+initMainMarker();
 setDefaultState(DEFAULT_LAT, DEFAULT_LNG);
 
-getMainMarker(DEFAULT_LAT, DEFAULT_LNG).on('moveend', (evt) => {
-  fieldAddress.value = evt.target.getLatLng();
-});
+setValueField(fieldAddress);
+
+const setSuccessSubmit = () => {
+  setDefaultState(DEFAULT_LAT, DEFAULT_LNG);
+  showSuccessMsg();
+};
 
 initMessages(body);
+
+setAdFormSubmit(setSuccessSubmit, showErrorMsg);
 
 resetBtn.addEventListener('click', (evt) => {
   evt.preventDefault();

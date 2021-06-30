@@ -100,8 +100,8 @@ const initMap = (callback, lat, lng)=> {
 
   map = L.map('map-canvas')
     .setView({
-      lat: 35.6895,
-      lng: 139.692,
+      lat: lat,
+      lng: lng,
     }, 10);
 
   L.tileLayer(
@@ -120,8 +120,6 @@ const initMap = (callback, lat, lng)=> {
     (advertisements) => {
       const points = advertisements.slice(0, SIMILAR_ADVERTISEMENT_COUNT);
 
-      
-
       points.forEach((item)=> {
 
         const icon = L.icon({
@@ -129,12 +127,13 @@ const initMap = (callback, lat, lng)=> {
           iconSize: [40, 40],
           iconAnchor: [20, 40],
         });
-        const lat = item.location.lat;
-        const lng = item.location.lng;
+
+        const latPoint = item.location.lat;
+        const lngPoint = item.location.lng;
         const marker = L.marker(
           {
-            lat,
-            lng,
+            lat: latPoint,
+            lng: lngPoint,
           },
           {
             icon,
@@ -149,43 +148,44 @@ const initMap = (callback, lat, lng)=> {
       });
     },
     () => {
-        showAlert('Произошла ошибка гагрузки данных. Попробуйте позже');
-    }
+      showAlert('Произошла ошибка загрузки данных. Попробуйте позже');
+    },
   );
-
-  initMarker(lat, lng);
 };
 
-const getMainMarker = ()=> {
-  const mainPinIcon = L.icon({
-    iconUrl: '../../img/main-pin.svg',
-    iconSize: [52, 52],
-    iconAnchor: [26, 52],
+const mainPinIcon = L.icon({
+  iconUrl: '../../img/main-pin.svg',
+  iconSize: [52, 52],
+  iconAnchor: [26, 52],
+});
+
+const mainMarker = L.marker(
+  {
+    lat: 35.6895,
+    lng: 139.692,
+  },
+  {
+    draggable: true,
+    icon: mainPinIcon,
+  },
+);
+
+const initMainMarker = ()=> {
+  mainMarker.addTo(map);
+};
+
+const setValueField = (field) => {
+  mainMarker.on('moveend', (evt) => {
+    field.value = evt.target.getLatLng();
   });
-
-  const mainMarker = L.marker(
-    {
-      lat: 35.6895,
-      lng: 139.692,
-    },
-    {
-      draggable: true,
-      icon: mainPinIcon,
-    },
-  );
-
-  return mainMarker;
 };
-
-const initMarker = (lat, lng)=> {
-    getMainMarker(lat, lng).addTo(map);
-}
 
 const setDefaultPositionMarker = (lat,lng) => {
-  getMainMarker(lat, lng).setLatLng({
+  mainMarker.setLatLng({
     lat: lat,
     lng: lng,
   });
 };
 
-export {initMap, setDefaultPositionMarker, getMainMarker};
+
+export {initMap, setDefaultPositionMarker, initMainMarker, setValueField};

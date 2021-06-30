@@ -1,5 +1,5 @@
 import {isEscEvent} from './utils.js';
-let errMsgBlock,successMsgBlock;
+let errMsgBlock, successMsgBlock;
 
 const createSuccessMsg = (body) => {
   const templateSuccess = document.querySelector('#success').content.querySelector('.success');

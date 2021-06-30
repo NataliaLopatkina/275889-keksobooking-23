@@ -1,8 +1,10 @@
 import {declinationOfNum} from './utils.js';
+import {sendData} from './api.js';
 
 const titleInput = document.querySelector('#title');
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
+//const address = document.querySelector('#address');
 const type = document.querySelector('#type');
 const typeOptions = type.querySelectorAll('option');
 const MAX_PRICE = 1000000;
@@ -15,6 +17,8 @@ const roomNumber = document.querySelector('#room_number');
 const roomNumberOptions = roomNumber.querySelectorAll('option');
 const capacity = document.querySelector('#capacity');
 let capacityOptionsList = capacity.querySelectorAll('option');
+const formButtonSubmit = document.querySelector('.ad-form__submit');
+const adForm = document.querySelector('.ad-form');
 
 const GUESTS_DICT = {
   single: 'гостя',
@@ -156,4 +160,16 @@ capacity.addEventListener('change', (evt)=> {
   toggleSelected(capacityOptionsList, evt.target);
 });
 
-export {setDefaultAddress};
+const setAdFormSubmit = (onSuccess, onFail) => {
+  formButtonSubmit.addEventListener('click', (evt)=> {
+    evt.preventDefault();
+
+    sendData(
+      () => onSuccess(),
+      () => onFail(),
+      new FormData(adForm),
+    );},
+  );
+};
+
+export {setDefaultAddress, setAdFormSubmit};
