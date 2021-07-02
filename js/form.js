@@ -4,7 +4,7 @@ import {sendData} from './api.js';
 const titleInput = document.querySelector('#title');
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
-//const address = document.querySelector('#address');
+const address = document.querySelector('#address');
 const type = document.querySelector('#type');
 const typeOptions = type.querySelectorAll('option');
 const MAX_PRICE = 1000000;

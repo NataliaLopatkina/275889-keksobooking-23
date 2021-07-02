@@ -22,65 +22,32 @@ const initMessages = (body) => {
   errMsgBlock = createErrorMsg(body);
 };
 
-const onErrMessageEscKeydown = (evt) => {
-  if (isEscEvent(evt)) {
+const hideErrMessage = (evt) => {
+  if (isEscEvent || evt.target === errMsgBlock) {
     evt.preventDefault();
-    hideErrMessage();
+    errMsgBlock.classList.add('hidden');
+    document.removeEventListener('keydown', hideErrMessage);
   }
 };
 
-const onErrMessageClick = (evt) => {
-  if (evt.target === errMsgBlock) {
+const hideSuccessMessage = (evt) => {
+  if (isEscEvent || evt.target === successMsgBlock) {
     evt.preventDefault();
-    hideErrMessage();
+    successMsgBlock.classList.add('hidden');
+    document.removeEventListener('keydown', hideSuccessMessage);
   }
 };
 
-const onErrMessageClickBtn = (evt) => {
-  evt.preventDefault();
-  hideErrMessage();
-};
-
-const onSuccessMessageEscKeydown = (evt) => {
-  if (isEscEvent(evt)) {
-    evt.preventDefault();
-    hideSuccessMessage();
-  }
-};
-
-const onSuccessMessageClick = (evt) => {
-  if (evt.target === successMsgBlock) {
-    evt.preventDefault();
-    hideSuccessMessage();
-  }
+const showErrMsg = ()=> {
+  errMsgBlock.classList.remove('hidden');
+  document.addEventListener('keydown', hideErrMessage);
+  errMsgBlock.addEventListener('click', hideErrMessage);
 };
 
 const showSuccessMsg = ()=> {
   successMsgBlock.classList.remove('hidden');
-  document.addEventListener('keydown', onSuccessMessageEscKeydown);
-  successMsgBlock.addEventListener('click', onSuccessMessageClick);
+  document.addEventListener('keydown', hideSuccessMessage);
+  successMsgBlock.addEventListener('click', hideSuccessMessage);
 };
 
-const showErrorMsg = ()=> {
-  errMsgBlock.classList.remove('hidden');
-  document.addEventListener('keydown', onErrMessageEscKeydown);
-  errMsgBlock.addEventListener('click', onErrMessageClick);
-  const buttonClose = errMsgBlock.querySelector('.error__button');
-  buttonClose.addEventListener('click', onErrMessageClickBtn);
-};
-
-const hideErrMessage = ()=> {
-  errMsgBlock.classList.add('hidden');
-  document.removeEventListener('keydown', onErrMessageEscKeydown);
-  errMsgBlock.removeEventListener('click', onErrMessageClick);
-  const buttonClose = errMsgBlock.querySelector('.error__button');
-  buttonClose.removeEventListener('click', onErrMessageClickBtn);
-};
-
-const hideSuccessMessage = ()=> {
-  successMsgBlock.classList.add('hidden');
-  document.removeEventListener('keydown', onSuccessMessageEscKeydown);
-  successMsgBlock.removeEventListener('click', onSuccessMessageClick);
-};
-
-export {initMessages, showErrorMsg, showSuccessMsg};
+export {initMessages, showErrMsg, showSuccessMsg};
