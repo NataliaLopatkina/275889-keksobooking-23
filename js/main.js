@@ -1,15 +1,30 @@
-import {createAdvertisement} from './data.js';
-import {addInactiveState, addActiveState} from './change-state.js';
-import './form.js';
-import {initMap, getMainMarker} from './map.js';
+import {addInactiveState, addActiveState, setDefaultState} from './change-state.js';
+import {setAdFormSubmit} from './form.js';
+import {initMap, setValueField, initMainMarker} from './map.js';
+import {initMessages, showErrMsg, showSuccessMsg} from './message.js';
 
-const SIMILAR_ADVERTISEMENT_COUNT = 10;
-const similarAdvertisiment = new Array(SIMILAR_ADVERTISEMENT_COUNT).fill(null).map(() => createAdvertisement());
+const DEFAULT_LAT = 35.6895;
+const DEFAULT_LNG = 139.692;
 const fieldAddress = document.querySelector('#address');
+const body = document.querySelector('body');
+const resetBtn = document.querySelector('.ad-form__reset');
 
 addInactiveState();
-initMap(addActiveState, similarAdvertisiment);
+initMap(addActiveState, DEFAULT_LAT, DEFAULT_LNG);
+initMainMarker();
+setDefaultState(DEFAULT_LAT, DEFAULT_LNG);
+initMessages(body);
 
-getMainMarker().on('moveend', (evt) => {
-  fieldAddress.value = evt.target.getLatLng();
+setValueField(fieldAddress);
+
+const setSuccessSubmit = () => {
+  setDefaultState(DEFAULT_LAT, DEFAULT_LNG);
+  showSuccessMsg();
+};
+
+setAdFormSubmit(setSuccessSubmit, showErrMsg);
+
+resetBtn.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  setDefaultState(DEFAULT_LAT, DEFAULT_LNG);
 });
