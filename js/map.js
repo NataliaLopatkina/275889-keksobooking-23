@@ -1,8 +1,6 @@
-import {declinationOfNum, showAlert} from './utils.js';
-import {getData} from './api.js';
+import {declinationOfNum} from './utils.js';
 
-const SIMILAR_ADVERTISEMENT_COUNT = 10;
-let map;
+let map, layerGroup;
 
 const createSimilarAdvertisiment = (advertisement)=> {
   const ROOMS_DICT = {
@@ -96,7 +94,7 @@ const createSimilarAdvertisiment = (advertisement)=> {
   return advertisementItem;
 };
 
-const initMap = (callback, lat, lng)=> {
+const initMap = (lat, lng)=> {
 
   map = L.map('map-canvas')
     .setView({
@@ -110,47 +108,7 @@ const initMap = (callback, lat, lng)=> {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     },
   )
-    .addTo(map)
-    .on('load', ()=>{
-      callback();
-
-    });
-
-  getData(
-    (advertisements) => {
-      const points = advertisements.slice(0, SIMILAR_ADVERTISEMENT_COUNT);
-
-      points.forEach((item)=> {
-
-        const icon = L.icon({
-          iconUrl: '../../img/pin.svg',
-          iconSize: [40, 40],
-          iconAnchor: [20, 40],
-        });
-
-        const latPoint = item.location.lat;
-        const lngPoint = item.location.lng;
-        const marker = L.marker(
-          {
-            lat: latPoint,
-            lng: lngPoint,
-          },
-          {
-            icon,
-          },
-        );
-
-        marker
-          .addTo(map)
-          .bindPopup(
-            createSimilarAdvertisiment(item),
-          );
-      });
-    },
-    () => {
-      showAlert('Произошла ошибка загрузки данных. Попробуйте позже');
-    },
-  );
+    .addTo(map);
 };
 
 const mainPinIcon = L.icon({
@@ -174,6 +132,41 @@ const initMainMarker = ()=> {
   mainMarker.addTo(map);
 };
 
+const initSimilarMarkers = (points)=> {
+  layerGroup = L.layerGroup().addTo(map);
+
+  points.forEach((item)=> {
+
+    const icon = L.icon({
+      iconUrl: '../../img/pin.svg',
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+    });
+
+    const latPoint = item.location.lat;
+    const lngPoint = item.location.lng;
+    const marker = L.marker(
+      {
+        lat: latPoint,
+        lng: lngPoint,
+      },
+      {
+        icon,
+      },
+    );
+
+    marker
+      .addTo(layerGroup)
+      .bindPopup(
+        createSimilarAdvertisiment(item),
+      );
+  });
+};
+
+const removeSimilarAdvertisiment = ()=> {
+  layerGroup.clearLayers();
+};
+
 const setValueField = (field) => {
   mainMarker.on('moveend', (evt) => {
     field.value = evt.target.getLatLng();
@@ -188,4 +181,4 @@ const setDefaultPositionMarker = (lat,lng) => {
 };
 
 
-export {initMap, setDefaultPositionMarker, initMainMarker, setValueField};
+export {initMap, setDefaultPositionMarker, initMainMarker, initSimilarMarkers, setValueField, removeSimilarAdvertisiment};
