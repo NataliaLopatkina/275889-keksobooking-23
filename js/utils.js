@@ -48,4 +48,13 @@ const showAlert = (message) => {
 
 const isEscEvent = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
 
-export {getRandomPositiveFloat, getRandomPositiveInteger, declinationOfNum, showAlert, isEscEvent};
+const debounce = (callback, timeoutDelay = 500)=> {
+  let timeoutId;
+
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
+export {getRandomPositiveFloat, getRandomPositiveInteger, declinationOfNum, showAlert, isEscEvent, debounce};

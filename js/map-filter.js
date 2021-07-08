@@ -1,7 +1,6 @@
 const MIN_PRICE = 10000;
 const MAX_PRICE = 50000;
 
-
 const priceCompare = (price)=> {
   let valuePrice;
   if (price < MIN_PRICE) {
@@ -15,62 +14,61 @@ const priceCompare = (price)=> {
   return valuePrice;
 };
 
-const getFeatureRand = (advertisement)=> {
-    const featureWifi = document.querySelector('#filter-wifi');
-    const featureDishwasher = document.querySelector('#filter-dishwasher');
-    const featureParking = document.querySelector('#filter-parking');
-    const featureWasher = document.querySelector('#filter-washer');
-    const featureElevator = document.querySelector('#filter-elevator');
-    const featureConditioner = document.querySelector('#filter-conditioner');
+const getFeaturesChecked = ()=> {
+  const checkboxList = document.querySelectorAll('.map__checkbox');
+  const arrayFeatures = [];
 
-    let rank = 0;
+  checkboxList.forEach((item)=> {
+    if (item.checked) {
+      arrayFeatures.push(item.value);
+    }
+  });
 
-    if (featureWifi.checked && advertisement.features.includes(featureWifi.value)) {
-        rank += 1
-    }
-    if (featureDishwasher.checked && advertisement.features.includes(featureDishwasher.value)) {
-        rank +=1
-    }
-    if (featureParking.checked && advertisement.features.includes(featureParking.value)) {
-        rank +=1
-    }
-    if (featureWasher.checked && advertisement.features.includes(featureWasher.value)) {
-        rank +=1
-    }
-    if (featureElevator.checked && advertisement.features.includes(featureElevator.value)) {
-        rank +=1
-    }
-    if (featureConditioner.checked && advertisement.features.includes(featureConditioner.value)) {
-        rank +=1
-    }
+  return arrayFeatures;
+};
 
-    console.log(rank) ;
-}
+const findArrayElements = (array1, array2)=> {
+
+  for(let index = 0; index < array2.length; index ++){
+    if(array1.indexOf(array2[index]) === -1) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+const getAdvertisimentRank = (advertisement)=> advertisement.offer.features.length;
+
+const compareAdvertisiment = (advertisementA, advertisementsB)=> {
+  const rankA = getAdvertisimentRank(advertisementA);
+  const rankB = getAdvertisimentRank(advertisementsB);
+
+  return rankA - rankB;
+};
 
 const getSimilarAdvertisiment = (array, type, rooms, guests, price)=> {
-  let newArrayAdvertisiment = [];
+  const newArrayAdvertisiment = [];
+
   for (let index = 0; index < array.length; index++) {
     const itemOffer = array[index].offer;
 
     if (itemOffer.type !== type && type !== 'any') {
-        continue
+      continue;
     } else if (itemOffer.rooms !== rooms && rooms !== 'any') {
-        continue
+      continue;
     } else if (itemOffer.guests !== guests && guests !== 'any') {
-        continue
-    }
-     else if (priceCompare(itemOffer.price) !== price && price !== 'any') {
-        continue;
-     }
-    else {
-        newArrayAdvertisiment.push(array[index])
+      continue;
+    } else if (priceCompare(itemOffer.price) !== price && price !== 'any') {
+      continue;
+    } else if (itemOffer.features === undefined || findArrayElements(itemOffer.features, getFeaturesChecked()) === false) {
+      continue;
     }
 
-    getFeatureRand(itemOffer)
+    newArrayAdvertisiment.push(array[index]);
   }
 
-  return newArrayAdvertisiment;
+  return newArrayAdvertisiment.slice().sort(compareAdvertisiment);
 };
 
-
-export {getSimilarAdvertisiment, getFeatureRand};
+export {getSimilarAdvertisiment, getFeaturesChecked};
