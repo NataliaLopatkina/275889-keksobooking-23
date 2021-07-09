@@ -1,6 +1,11 @@
 const MIN_PRICE = 10000;
 const MAX_PRICE = 50000;
 
+const typeFilter = document.querySelector('#housing-type');
+const priceFilter = document.querySelector('#housing-price');
+const roomsFilter = document.querySelector('#housing-rooms');
+const guestsFilter = document.querySelector('#housing-guests');
+
 const priceCompare = (price)=> {
   let valuePrice;
   if (price < MIN_PRICE) {
@@ -28,7 +33,9 @@ const getFeaturesChecked = ()=> {
 };
 
 const findArrayElements = (array1, array2)=> {
-
+  if (array2.length === 0 ) {
+    return true;
+  }
   for(let index = 0; index < array2.length; index ++){
     if(array1.indexOf(array2[index]) === -1) {
       return false;
@@ -47,19 +54,19 @@ const compareAdvertisiment = (advertisementA, advertisementsB)=> {
   return rankA - rankB;
 };
 
-const getSimilarAdvertisiment = (array, type, rooms, guests, price)=> {
+const getSimilarAdvertisiment = (array)=> {
   const newArrayAdvertisiment = [];
 
   for (let index = 0; index < array.length; index++) {
     const itemOffer = array[index].offer;
 
-    if (itemOffer.type !== type && type !== 'any') {
+    if (itemOffer.type !== typeFilter.value && typeFilter.value !== 'any') {
       continue;
-    } else if (itemOffer.rooms !== rooms && rooms !== 'any') {
+    } else if (itemOffer.rooms !== roomsFilter.value && roomsFilter.value !== 'any') {
       continue;
-    } else if (itemOffer.guests !== guests && guests !== 'any') {
+    } else if (itemOffer.guests !== guestsFilter.value && guestsFilter.value !== 'any') {
       continue;
-    } else if (priceCompare(itemOffer.price) !== price && price !== 'any') {
+    } else if (priceCompare(itemOffer.price) !== priceFilter.value && priceFilter.value !== 'any') {
       continue;
     } else if (itemOffer.features === undefined || findArrayElements(itemOffer.features, getFeaturesChecked()) === false) {
       continue;

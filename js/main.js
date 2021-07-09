@@ -13,31 +13,27 @@ const fieldAddress = document.querySelector('#address');
 const body = document.querySelector('body');
 const resetBtn = document.querySelector('.ad-form__reset');
 const filterForm = document.querySelector('.map__filters');
-const typeFilter = document.querySelector('#housing-type');
-const priceFilter = document.querySelector('#housing-price');
-const roomsFilter = document.querySelector('#housing-rooms');
-const guestsFilter = document.querySelector('#housing-guests');
 
 addInactiveState();
 initMap(DEFAULT_LAT, DEFAULT_LNG);
 initMainMarker();
 getData(
   (advertisements) => {
-    initSimilarMarkers(getSimilarAdvertisiment(advertisements, typeFilter.value, roomsFilter.value, guestsFilter.value, priceFilter.value).slice(0, SIMILAR_ADVERTISEMENT_COUNT));
+    initSimilarMarkers(getSimilarAdvertisiment(advertisements).slice(0, SIMILAR_ADVERTISEMENT_COUNT));
     addActiveState();
 
-    const setChangeFilter = ()=> {
-      filterForm.addEventListener('change', ()=> {
-        removeSimilarAdvertisiment();
-        initSimilarMarkers(getSimilarAdvertisiment(advertisements, typeFilter.value, roomsFilter.value, guestsFilter.value, priceFilter.value).slice(0, SIMILAR_ADVERTISEMENT_COUNT));
-      });
-    };
-    debounce(setChangeFilter());
-  },
-  () => {
+    filterForm.addEventListener('change',
+      debounce(
+        ()=> {
+          removeSimilarAdvertisiment();
+          initSimilarMarkers(getSimilarAdvertisiment(advertisements)
+            .slice(0, SIMILAR_ADVERTISEMENT_COUNT));
+        }
+      )
+    );
+  },  () => {
     showAlert('Произошла ошибка загрузки данных. Попробуйте позже');
-  },
-);
+  })
 setDefaultState(DEFAULT_LAT, DEFAULT_LNG);
 initMessages(body);
 
@@ -50,6 +46,7 @@ const setSuccessSubmit = () => {
 
 setAdFormSubmit(setSuccessSubmit, showErrMsg);
 
+// initResetBtn();
 resetBtn.addEventListener('click', (evt) => {
   evt.preventDefault();
   setDefaultState(DEFAULT_LAT, DEFAULT_LNG);
