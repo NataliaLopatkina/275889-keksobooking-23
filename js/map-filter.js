@@ -5,6 +5,9 @@ const typeFilter = document.querySelector('#housing-type');
 const priceFilter = document.querySelector('#housing-price');
 const roomsFilter = document.querySelector('#housing-rooms');
 const guestsFilter = document.querySelector('#housing-guests');
+const filterForm = document.querySelector('.map__filters');
+
+const getFilterForm = ()=> filterForm;
 
 const priceCompare = (price)=> {
   let valuePrice;
@@ -32,12 +35,12 @@ const getFeaturesChecked = ()=> {
   return arrayFeatures;
 };
 
-const findArrayElements = (array1, array2)=> {
-  if (array2.length === 0 ) {
+const findArrayElements = (elements1, elements2)=> {
+  if (elements2.length === 0 ) {
     return true;
   }
-  for(let index = 0; index < array2.length; index ++){
-    if(array1.indexOf(array2[index]) === -1) {
+  for(let index = 0; index < elements2.length; index ++){
+    if(elements1.indexOf(elements2[index]) === -1) {
       return false;
     }
   }
@@ -78,4 +81,4 @@ const getSimilarAdvertisiment = (array)=> {
   return newArrayAdvertisiment.slice().sort(compareAdvertisiment);
 };
 
-export {getSimilarAdvertisiment, getFeaturesChecked};
+export {getFilterForm, getSimilarAdvertisiment};

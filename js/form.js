@@ -13,12 +13,13 @@ const timeIn = document.querySelector('#timein');
 const timeInOptions = timeIn.querySelectorAll('option');
 const timeOut = document.querySelector('#timeout');
 const timeOutOptions = timeOut.querySelectorAll('option');
-const roomNumber = document.querySelector('#room_number');
-const roomNumberOptions = roomNumber.querySelectorAll('option');
+const roomsNumber = document.querySelector('#room_number');
+const roomsNumberOptions = roomsNumber.querySelectorAll('option');
 const capacity = document.querySelector('#capacity');
 let capacityOptionsList = capacity.querySelectorAll('option');
 const formButtonSubmit = document.querySelector('.ad-form__submit');
 const adForm = document.querySelector('.ad-form');
+const resetBtn = document.querySelector('.ad-form__reset');
 
 const GUESTS_DICT = {
   single: 'гостя',
@@ -26,7 +27,7 @@ const GUESTS_DICT = {
   many: 'гостей',
 };
 
-const priceList = {
+const prices = {
   'bungalow': 0,
   'flat': 1000,
   'hotel': 3000,
@@ -34,7 +35,7 @@ const priceList = {
   'palace': 10000,
 };
 
-const roomNumberList = {
+const rooms = {
   '1': [1],
   '2': [2, 1],
   '3': [3, 2, 1],
@@ -102,7 +103,7 @@ titleInput.addEventListener('input', () => {
 
 type.addEventListener('change', (evt) => {
   const typeValue = evt.target.value;
-  const minPrice = priceList[typeValue];
+  const minPrice = prices[typeValue];
   toggleSelected(typeOptions, evt.target);
 
   priceInput.setAttribute('min', minPrice);
@@ -130,9 +131,9 @@ timeOut.addEventListener('change', () => {
   changeValue(timeOut, timeIn);
 });
 
-roomNumber.addEventListener('change', (evt)=> {
-  const roomNumberValue = evt.target.value;
-  const capacityList = roomNumberList[roomNumberValue];
+roomsNumber.addEventListener('change', (evt)=> {
+  const roomsNumberValue = evt.target.value;
+  const capacityList = rooms[roomsNumberValue];
   const capacityOptions = capacity.querySelectorAll('option');
 
   capacityOptions.forEach((item)=> {
@@ -141,7 +142,7 @@ roomNumber.addEventListener('change', (evt)=> {
 
   capacityList.forEach((item)=> {
     let capacityText = `для ${item} ${declinationOfNum(item, GUESTS_DICT)}`;
-    if (roomNumberValue === '100') {
+    if (roomsNumberValue === '100') {
       capacityText = 'не для гостей';
     }
 
@@ -151,7 +152,7 @@ roomNumber.addEventListener('change', (evt)=> {
 
     capacity.appendChild(newOption);
   });
-  toggleSelected(roomNumberOptions, evt.target);
+  toggleSelected(roomsNumberOptions, evt.target);
   toggleSelected(capacityOptionsList, capacity);
 });
 
@@ -159,6 +160,8 @@ capacity.addEventListener('change', (evt)=> {
   capacityOptionsList = capacity.querySelectorAll('option');
   toggleSelected(capacityOptionsList, evt.target);
 });
+
+const getInputAddress = ()=> address;
 
 const setAdFormSubmit = (onSuccess, onFail) => {
   formButtonSubmit.addEventListener('click', (evt)=> {
@@ -172,4 +175,6 @@ const setAdFormSubmit = (onSuccess, onFail) => {
   );
 };
 
-export {setDefaultAddress, setAdFormSubmit};
+const getResetBtn = ()=> resetBtn;
+
+export {setDefaultAddress, getInputAddress, setAdFormSubmit, getResetBtn};
