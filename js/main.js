@@ -1,30 +1,51 @@
 import {addInactiveState, addActiveState, setDefaultState} from './change-state.js';
-import {setAdFormSubmit} from './form.js';
-import {initMap, setValueField, initMainMarker} from './map.js';
+import {getInputAddress, setAdFormSubmit, getResetBtn} from './form.js';
+import {initMap, setValueField, initMainMarker, initSimilarMarkers, removeSimilarAdvertisiment} from './map.js';
 import {initMessages, showErrMsg, showSuccessMsg} from './message.js';
+import {getData} from './api.js';
+import {showAlert, debounce} from './utils.js';
+import {getFilterForm, getSimilarAdvertisiment} from './map-filter.js';
 
 const DEFAULT_LAT = 35.6895;
 const DEFAULT_LNG = 139.692;
-const fieldAddress = document.querySelector('#address');
+const SIMILAR_ADVERTISEMENT_COUNT = 10;
 const body = document.querySelector('body');
-const resetBtn = document.querySelector('.ad-form__reset');
+let similarAdvertisiments = [];
 
 addInactiveState();
-initMap(addActiveState, DEFAULT_LAT, DEFAULT_LNG);
+initMap(DEFAULT_LAT, DEFAULT_LNG);
 initMainMarker();
-setDefaultState(DEFAULT_LAT, DEFAULT_LNG);
-initMessages(body);
+getData(
+  (advertisements) => {
+    initSimilarMarkers(getSimilarAdvertisiment(advertisements).slice(0, SIMILAR_ADVERTISEMENT_COUNT));
+    addActiveState();
+    similarAdvertisiments = advertisements.slice(0, SIMILAR_ADVERTISEMENT_COUNT);
 
-setValueField(fieldAddress);
+    getFilterForm().addEventListener('change',
+      debounce(
+        ()=> {
+          removeSimilarAdvertisiment();
+          initSimilarMarkers(getSimilarAdvertisiment(advertisements)
+            .slice(0, SIMILAR_ADVERTISEMENT_COUNT));
+        },
+      ),
+    );
+  },  () => {
+    showAlert('Произошла ошибка загрузки данных. Попробуйте позже');
+  });
+
+setDefaultState(DEFAULT_LAT, DEFAULT_LNG, similarAdvertisiments);
+initMessages(body);
+setValueField(getInputAddress());
 
 const setSuccessSubmit = () => {
-  setDefaultState(DEFAULT_LAT, DEFAULT_LNG);
+  setDefaultState(DEFAULT_LAT, DEFAULT_LNG, similarAdvertisiments);
   showSuccessMsg();
 };
 
 setAdFormSubmit(setSuccessSubmit, showErrMsg);
 
-resetBtn.addEventListener('click', (evt) => {
+getResetBtn().addEventListener('click', (evt) => {
   evt.preventDefault();
-  setDefaultState(DEFAULT_LAT, DEFAULT_LNG);
+  setDefaultState(DEFAULT_LAT, DEFAULT_LNG, similarAdvertisiments);
 });
