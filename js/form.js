@@ -1,13 +1,13 @@
 import {declinationOfNum} from './utils.js';
 import {sendData} from './api.js';
 
-const titleInput = document.querySelector('#title');
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
+const MAX_PRICE = 1000000;
+const titleInput = document.querySelector('#title');
 const address = document.querySelector('#address');
 const type = document.querySelector('#type');
 const typeOptions = type.querySelectorAll('option');
-const MAX_PRICE = 1000000;
 const priceInput = document.querySelector('#price');
 const timeIn = document.querySelector('#timein');
 const timeInOptions = timeIn.querySelectorAll('option');
@@ -16,10 +16,10 @@ const timeOutOptions = timeOut.querySelectorAll('option');
 const roomsNumber = document.querySelector('#room_number');
 const roomsNumberOptions = roomsNumber.querySelectorAll('option');
 const capacity = document.querySelector('#capacity');
-let capacityOptionsList = capacity.querySelectorAll('option');
 const formButtonSubmit = document.querySelector('.ad-form__submit');
 const adForm = document.querySelector('.ad-form');
 const resetBtn = document.querySelector('.ad-form__reset');
+let capacityOptionsList = capacity.querySelectorAll('option');
 
 const GUESTS_DICT = {
   single: 'гостя',

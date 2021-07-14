@@ -1,105 +1,35 @@
-import {declinationOfNum} from './utils.js';
+import {createSimilarAdvertisement} from './popup.js';
 
+const SIMILAR_ADVERTISEMENT_COUNT = 10;
+const defaultPosition = {
+  lat: 35.6895,
+  lng: 139.692,
+};
 let map, layerGroup;
 
-const createSimilarAdvertisiment = (advertisement)=> {
-  const ROOMS_DICT = {
-    single: 'комната',
-    several: 'комнаты',
-    many: 'комнат',
-  };
+const mainPinIcon = L.icon({
+  iconUrl: 'img/main-pin.svg',
+  iconSize: [52, 52],
+  iconAnchor: [26, 52],
+});
 
-  const GUESTS_DICT = {
-    single: 'гостя',
-    several: 'гостей',
-    many: 'гостей',
-  };
+const mainMarker = L.marker(
+  {
+    lat: defaultPosition.lat,
+    lng: defaultPosition.lng,
+  },
+  {
+    draggable: true,
+    icon: mainPinIcon,
+  },
+);
 
-  const templateCard = document.querySelector('#card').content.querySelector('.popup');
-  const advertisementItem = templateCard.cloneNode(true);
-  const featuresList = advertisementItem.querySelector('.popup__features');
-  const photosList = advertisementItem.querySelector('.popup__photos');
-  const avatar = advertisementItem.querySelector('.popup__avatar');
-
-  const types = {
-    'flat': 'Квартира',
-    'bungalow': 'Бунгало',
-    'house': 'Дом',
-    'palace': 'Дворец',
-    'hotel': 'Отель',
-  };
-
-  const fillContent = (selector, content)=> {
-    const element = advertisementItem.querySelector(selector);
-
-    if (content === undefined) {
-      element.remove();
-    } else {
-      element.textContent = content;
-    }
-  };
-
-  const offer = advertisement.offer;
-  const textRooms = declinationOfNum(offer.rooms, ROOMS_DICT);
-  const textGuests = declinationOfNum(offer.guests, GUESTS_DICT);
-
-  fillContent('.popup__title', offer.title);
-  fillContent('.popup__text--address', offer.address);
-  fillContent('.popup__text--price', `${offer.price} ₽/ночь`);
-  fillContent('.popup__type', types[offer.type]);
-
-  fillContent('.popup__text--capacity', `${offer.rooms} ${textRooms} для ${offer.guests} ${textGuests}`);
-  fillContent('.popup__text--time', `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`);
-
-  const featuresItems = featuresList.querySelectorAll('.popup__feature');
-
-  featuresItems.forEach((feature)=> {
-    feature.remove();
-  });
-
-  if (offer.features !== undefined) {
-    offer.features.forEach((feature)=> {
-      const featureElement = document.createElement('li');
-      featureElement.classList.add('popup__feature', `popup__feature--${feature}`);
-      featuresList.appendChild(featureElement);
-    });
-  } else {
-    featuresList.remove();
-  }
-
-  fillContent('.popup__description', offer.description);
-
-  const photoItem = photosList.querySelectorAll('.popup__photo');
-  photoItem.forEach((photo)=> {
-    photo.remove();
-  });
-
-  if (offer.photos !== undefined) {
-    offer.photos.forEach((photo)=> {
-      const photoElement = document.createElement('img');
-      photoElement.setAttribute('src', photo);
-      photoElement.classList.add('popup__photo');
-      photoElement.setAttribute('width', '45');
-      photoElement.setAttribute('height', '40');
-      photoElement.setAttribute('alt', 'Фотография жилья');
-
-      photosList.appendChild(photoElement);
-    });
-  } else {
-    photosList.remove();
-  }
-
-  avatar.setAttribute('src', advertisement.author.avatar);
-
-  return advertisementItem;
-};
-
-const initMap = (lat, lng)=> {
+const initMap = ()=> {
 
   map = L.map('map-canvas')
     .setView({
-      lat: lat,
-      lng: lng,
+      lat: defaultPosition.lat,
+      lng: defaultPosition.lng,
     }, 10);
 
   L.tileLayer(
@@ -109,46 +39,30 @@ const initMap = (lat, lng)=> {
     },
   )
     .addTo(map);
-};
 
-const mainPinIcon = L.icon({
-  iconUrl: '../../img/main-pin.svg',
-  iconSize: [52, 52],
-  iconAnchor: [26, 52],
-});
-
-const mainMarker = L.marker(
-  {
-    lat: 35.6895,
-    lng: 139.692,
-  },
-  {
-    draggable: true,
-    icon: mainPinIcon,
-  },
-);
-
-const initMainMarker = ()=> {
   mainMarker.addTo(map);
 };
 
 const initSimilarMarkers = (points)=> {
+
+  if (layerGroup) {
+    layerGroup.clearLayers();
+  }
+
   layerGroup = L.layerGroup().addTo(map);
 
-  points.forEach((item)=> {
+  points.slice(0, SIMILAR_ADVERTISEMENT_COUNT).forEach((item)=> {
 
     const icon = L.icon({
-      iconUrl: '../../img/pin.svg',
+      iconUrl: 'img/pin.svg',
       iconSize: [40, 40],
       iconAnchor: [20, 40],
     });
 
-    const latPoint = item.location.lat;
-    const lngPoint = item.location.lng;
     const marker = L.marker(
       {
-        lat: latPoint,
-        lng: lngPoint,
+        lat: item.location.lat,
+        lng: item.location.lng,
       },
       {
         icon,
@@ -158,27 +72,24 @@ const initSimilarMarkers = (points)=> {
     marker
       .addTo(layerGroup)
       .bindPopup(
-        createSimilarAdvertisiment(item),
+        createSimilarAdvertisement(item),
       );
   });
 };
 
-const removeSimilarAdvertisiment = ()=> {
-  layerGroup.clearLayers();
-};
-
 const setValueField = (field) => {
   mainMarker.on('moveend', (evt) => {
-    field.value = evt.target.getLatLng();
+    const curPosition = evt.target.getLatLng();
+    field.value = `${curPosition.lat.toFixed(5)}, ${curPosition.lng.toFixed(5)}`;
   });
 };
 
-const setDefaultPositionMarker = (lat,lng) => {
+const setDefaultPositionMarker = () => {
   mainMarker.setLatLng({
-    lat: lat,
-    lng: lng,
+    lat: defaultPosition.lat,
+    lng: defaultPosition.lng,
   });
 };
 
 
-export {initMap, setDefaultPositionMarker, initMainMarker, initSimilarMarkers, setValueField, removeSimilarAdvertisiment};
+export {initMap, setDefaultPositionMarker, initSimilarMarkers, setValueField, defaultPosition};

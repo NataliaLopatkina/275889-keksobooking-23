@@ -1,8 +1,8 @@
 const getData = (onSuccess, onFail) => {
   fetch('https://23.javascript.pages.academy/keksobooking/data')
     .then((response) =>  response.json())
-    .then((advertisiments) => {
-      onSuccess(advertisiments);
+    .then((advertisements) => {
+      onSuccess(advertisements);
     })
     .catch(()=> {
       onFail();
