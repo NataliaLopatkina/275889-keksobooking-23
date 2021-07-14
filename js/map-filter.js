@@ -45,7 +45,7 @@ const getAdvertisimentRank = (advertisement)=> {
   Array.isArray(advertisement.offer.features) ? featuresLength = advertisement.offer.features.length : featuresLength = 0;
 
   return featuresLength;
-}
+};
 
 const compareAdvertisements = (advertisementA, advertisementB)=> {
   const rankA = getAdvertisimentRank(advertisementA);
