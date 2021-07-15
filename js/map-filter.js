@@ -24,9 +24,6 @@ const comparePrice = (price)=> {
 const getFeaturesChecked = ()=> Array.from(document.querySelectorAll('.map__checkbox:checked')).map((chkbx) => chkbx.value);
 
 const isContainFeatures = (elements1, elements2)=> {
-  if (elements2.length === 0 ) {
-    return true;
-  }
   if (elements1.length === 0) {
     return false;
   }
@@ -39,19 +36,13 @@ const isContainFeatures = (elements1, elements2)=> {
   return true;
 };
 
-const getAdvertisimentRank = (advertisement)=> {
-  let featuresLength;
-
-  Array.isArray(advertisement.offer.features) ? featuresLength = advertisement.offer.features.length : featuresLength = 0;
-
-  return featuresLength;
-};
+const getAdvertisimentRank = (advertisement)=> Array.isArray(advertisement.offer.features) ? advertisement.offer.features.length : 0;
 
 const compareAdvertisements = (advertisementA, advertisementB)=> {
   const rankA = getAdvertisimentRank(advertisementA);
   const rankB = getAdvertisimentRank(advertisementB);
 
-  return rankA - rankB;
+  return rankB - rankA;
 };
 
 const getSimilarAdvertisements = (array)=> {

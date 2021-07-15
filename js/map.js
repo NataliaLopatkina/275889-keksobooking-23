@@ -14,10 +14,7 @@ const mainPinIcon = L.icon({
 });
 
 const mainMarker = L.marker(
-  {
-    lat: defaultPosition.lat,
-    lng: defaultPosition.lng,
-  },
+  defaultPosition,
   {
     draggable: true,
     icon: mainPinIcon,
@@ -26,11 +23,7 @@ const mainMarker = L.marker(
 
 const initMap = ()=> {
 
-  map = L.map('map-canvas')
-    .setView({
-      lat: defaultPosition.lat,
-      lng: defaultPosition.lng,
-    }, 10);
+  map = L.map('map-canvas').setView(defaultPosition, 10);
 
   L.tileLayer(
     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -85,10 +78,7 @@ const setValueField = (field) => {
 };
 
 const setDefaultPositionMarker = () => {
-  mainMarker.setLatLng({
-    lat: defaultPosition.lat,
-    lng: defaultPosition.lng,
-  });
+  mainMarker.setLatLng(defaultPosition);
 };
 
 
