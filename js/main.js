@@ -1,27 +1,26 @@
 import {addInactiveState, addActiveState, setDefaultState} from './change-state.js';
-import {getInputAddress, setAdFormSubmit, getResetBtn} from './form.js';
-import {initMap, setValueField, initSimilarMarkers} from './map.js';
+import {getAddressField, setAdFormSubmit, getResetBtn} from './form.js';
+import {initMap, setValueAddressField, initSimilarMarkers} from './map.js';
 import {initMessages, showErrMsg, showSuccessMsg} from './message.js';
 import {getData} from './api.js';
 import {showAlert, debounce} from './utils.js';
 import {getFilterForm, getSimilarAdvertisements} from './map-filter.js';
 
-const body = document.querySelector('body');
-let similarAdvertisements = [];
+let advertisements = [];
 
 addInactiveState();
 initMap();
 getData(
-  (advertisements) => {
-    similarAdvertisements = advertisements;
+  (ads) => {
+    advertisements = ads;
 
-    initSimilarMarkers(getSimilarAdvertisements(similarAdvertisements));
+    initSimilarMarkers(getSimilarAdvertisements(advertisements));
     addActiveState();
 
     getFilterForm().addEventListener('change',
       debounce(
         ()=> {
-          initSimilarMarkers(getSimilarAdvertisements(similarAdvertisements));
+          initSimilarMarkers(getSimilarAdvertisements(advertisements));
         },
       ),
     );
@@ -29,12 +28,12 @@ getData(
     showAlert('Произошла ошибка загрузки данных. Попробуйте позже');
   });
 
-setDefaultState(similarAdvertisements);
-initMessages(body);
-setValueField(getInputAddress());
+setDefaultState(advertisements);
+initMessages();
+setValueAddressField(getAddressField());
 
 const setSuccessSubmit = () => {
-  setDefaultState(similarAdvertisements);
+  setDefaultState(advertisements);
   showSuccessMsg();
 };
 
@@ -42,5 +41,5 @@ setAdFormSubmit(setSuccessSubmit, showErrMsg);
 
 getResetBtn().addEventListener('click', (evt) => {
   evt.preventDefault();
-  setDefaultState(similarAdvertisements);
+  setDefaultState(advertisements);
 });

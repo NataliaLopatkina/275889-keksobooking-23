@@ -1,25 +1,25 @@
 import {isEscEvent} from './utils.js';
 let errMsgBlock, successMsgBlock;
 
-const createSuccessMsg = (body) => {
+const createSuccessMsg = () => {
   const templateSuccess = document.querySelector('#success').content.querySelector('.success');
   const block = templateSuccess.cloneNode(true);
   block.classList.add('hidden');
-  body.appendChild(block);
+  document.body.appendChild(block);
   return document.querySelector('.success');
 };
 
-const createErrorMsg = (body) => {
+const createErrorMsg = () => {
   const templateErr = document.querySelector('#error').content.querySelector('.error');
   const block = templateErr.cloneNode(true);
   block.classList.add('hidden');
-  body.appendChild(block);
+  document.body.appendChild(block);
   return document.querySelector('.error');
 };
 
-const initMessages = (body) => {
-  successMsgBlock = createSuccessMsg(body);
-  errMsgBlock = createErrorMsg(body);
+const initMessages = () => {
+  successMsgBlock = createSuccessMsg();
+  errMsgBlock = createErrorMsg();
 };
 
 const hideErrMessage = (evt) => {

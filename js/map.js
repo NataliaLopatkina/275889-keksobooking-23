@@ -70,7 +70,7 @@ const initSimilarMarkers = (points)=> {
   });
 };
 
-const setValueField = (field) => {
+const setValueAddressField = (field) => {
   mainMarker.on('moveend', (evt) => {
     const curPosition = evt.target.getLatLng();
     field.value = `${curPosition.lat.toFixed(5)}, ${curPosition.lng.toFixed(5)}`;
@@ -82,4 +82,4 @@ const setDefaultPositionMarker = () => {
 };
 
 
-export {initMap, setDefaultPositionMarker, initSimilarMarkers, setValueField, defaultPosition};
+export {initMap, setDefaultPositionMarker, initSimilarMarkers, setValueAddressField, defaultPosition};

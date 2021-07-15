@@ -13,12 +13,6 @@ const createSimilarAdvertisement = (advertisement)=> {
     many: 'гостей',
   };
 
-  const templateCard = document.querySelector('#card').content.querySelector('.popup');
-  const advertisementItem = templateCard.cloneNode(true);
-  const featuresList = advertisementItem.querySelector('.popup__features');
-  const photosList = advertisementItem.querySelector('.popup__photos');
-  const avatar = advertisementItem.querySelector('.popup__avatar');
-
   const types = {
     'flat': 'Квартира',
     'bungalow': 'Бунгало',
@@ -26,6 +20,12 @@ const createSimilarAdvertisement = (advertisement)=> {
     'palace': 'Дворец',
     'hotel': 'Отель',
   };
+
+  const templateCard = document.querySelector('#card').content.querySelector('.popup');
+  const advertisementItem = templateCard.cloneNode(true);
+  const featuresList = advertisementItem.querySelector('.popup__features');
+  const photosList = advertisementItem.querySelector('.popup__photos');
+  const avatar = advertisementItem.querySelector('.popup__avatar');
 
   const fillContent = (selector, content)=> {
     const element = advertisementItem.querySelector(selector);

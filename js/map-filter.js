@@ -21,7 +21,7 @@ const comparePrice = (price)=> {
   return valuePrice;
 };
 
-const getFeaturesChecked = ()=> Array.from(document.querySelectorAll('.map__checkbox:checked')).map((chkbx) => chkbx.value);
+const getCheckedFeatures = ()=> Array.from(document.querySelectorAll('.map__checkbox:checked')).map((chkbx) => chkbx.value);
 
 const isContainFeatures = (elements1, elements2)=> {
   if (elements1.length === 0) {
@@ -36,7 +36,7 @@ const isContainFeatures = (elements1, elements2)=> {
   return true;
 };
 
-const getAdvertisimentRank = (advertisement)=> Array.isArray(advertisement.offer.features) ? advertisement.offer.features.length : 0;
+const getAdvertisimentRank = (advertisement)=> {return Array.isArray(advertisement.offer.features) ? advertisement.offer.features.length : 0;}
 
 const compareAdvertisements = (advertisementA, advertisementB)=> {
   const rankA = getAdvertisimentRank(advertisementA);
@@ -53,15 +53,15 @@ const getSimilarAdvertisements = (array)=> {
 
     if (itemOffer.type !== typeFilter.value && typeFilter.value !== 'any') {
       continue;
-    } else if (itemOffer.rooms !== roomsFilter.value && roomsFilter.value !== 'any') {
+    } else if (itemOffer.rooms !== Number(roomsFilter.value) && roomsFilter.value !== 'any') {
       continue;
-    } else if (itemOffer.guests !== guestsFilter.value && guestsFilter.value !== 'any') {
+    } else if (itemOffer.guests !== Number(guestsFilter.value) && guestsFilter.value !== 'any') {
       continue;
     } else if (comparePrice(itemOffer.price) !== priceFilter.value && priceFilter.value !== 'any') {
       continue;
-    } else if (!Array.isArray(itemOffer.features) && getFeaturesChecked().length !== 0) {
+    } else if (!Array.isArray(itemOffer.features) && getCheckedFeatures().length !== 0) {
       continue;
-    } else if (Array.isArray(itemOffer.features) && isContainFeatures(itemOffer.features, getFeaturesChecked()) === false) {
+    } else if (Array.isArray(itemOffer.features) && isContainFeatures(itemOffer.features, getCheckedFeatures()) === false) {
       continue;
     }
 

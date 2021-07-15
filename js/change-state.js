@@ -1,5 +1,5 @@
 import {setDefaultPositionMarker, initSimilarMarkers, defaultPosition} from './map.js';
-import {setDefaultAddress} from './form.js';
+import {setDefaultValues} from './form.js';
 
 const adForm = document.querySelector('.ad-form');
 const filters = document.querySelector('.map__filters');
@@ -36,7 +36,7 @@ const setDefaultState = (advertisements) => {
   adForm.reset();
   filters.reset();
   setDefaultPositionMarker();
-  setDefaultAddress(`${defaultPosition.lat}, ${defaultPosition.lng}`);
+  setDefaultValues(`${defaultPosition.lat}, ${defaultPosition.lng}`);
   initSimilarMarkers(advertisements);
 };
 

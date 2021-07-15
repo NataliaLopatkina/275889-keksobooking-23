@@ -4,22 +4,17 @@ import {sendData} from './api.js';
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
 const MAX_PRICE = 1000000;
-const titleInput = document.querySelector('#title');
-const address = document.querySelector('#address');
-const type = document.querySelector('#type');
-const typeOptions = type.querySelectorAll('option');
-const priceInput = document.querySelector('#price');
-const timeIn = document.querySelector('#timein');
-const timeInOptions = timeIn.querySelectorAll('option');
-const timeOut = document.querySelector('#timeout');
-const timeOutOptions = timeOut.querySelectorAll('option');
-const roomsNumber = document.querySelector('#room_number');
-const roomsNumberOptions = roomsNumber.querySelectorAll('option');
-const capacity = document.querySelector('#capacity');
-const formButtonSubmit = document.querySelector('.ad-form__submit');
+const titleField = document.querySelector('#title');
+const addressField = document.querySelector('#address');
+const typeField = document.querySelector('#type');
+const priceField = document.querySelector('#price');
+const timeInField = document.querySelector('#timein');
+const timeOutField = document.querySelector('#timeout');
+const roomsField = document.querySelector('#room_number');
+const capacityField = document.querySelector('#capacity');
 const adForm = document.querySelector('.ad-form');
+const submitBtn = document.querySelector('.ad-form__submit');
 const resetBtn = document.querySelector('.ad-form__reset');
-let capacityOptionsList = capacity.querySelectorAll('option');
 
 const GUESTS_DICT = {
   single: 'гостя',
@@ -39,7 +34,12 @@ const rooms = {
   '1': [1],
   '2': [2, 1],
   '3': [3, 2, 1],
-  '100': ['не для гостей'],
+  '100': [0],
+};
+
+const defaultValues = {
+  type: 'flat',
+  capacity: 1,
 };
 
 const addInvalidClass = (field) => {
@@ -72,69 +72,13 @@ const checkValueField = (field, valueField, minValue, maxValue, minMessage, maxM
   field.reportValidity();
 };
 
-const toggleSelected = (elements, element) => {
-  elements.forEach((item) => {
-    item.removeAttribute('selected');
-  });
-
-  element.options[element.selectedIndex].setAttribute('selected', 'selected');
-};
-
 const changeValue = (field, relatedField) => {
   relatedField.value = field.value;
-  toggleSelected(timeInOptions, field);
-  toggleSelected(timeOutOptions, relatedField);
 };
 
-const setDefaultAddress = (addr) => {
-  address.value = addr;
-};
-
-titleInput.addEventListener('invalid', () => {
-  checkFillField(titleInput);
-});
-
-titleInput.addEventListener('input', () => {
-  const valueField = titleInput.value.length;
-  const minMessage = `Ещё ${  MIN_TITLE_LENGTH - valueField } симв.`;
-  const maxMessage = `Удалите лишние ${  valueField - MAX_TITLE_LENGTH } симв.`;
-  checkValueField(titleInput, valueField, MIN_TITLE_LENGTH, MAX_TITLE_LENGTH, minMessage, maxMessage);
-});
-
-type.addEventListener('change', (evt) => {
-  const typeValue = evt.target.value;
-  const minPrice = prices[typeValue];
-  toggleSelected(typeOptions, evt.target);
-
-  priceInput.setAttribute('min', minPrice);
-  priceInput.setAttribute('placeholder', minPrice);
-});
-
-priceInput.addEventListener('invalid', () => {
-  checkFillField(priceInput);
-});
-
-priceInput.addEventListener('input', () => {
-  const valueField = priceInput.value;
-  const minPrice = +priceInput.getAttribute('min');
-  const minMessage = `Стоимость жилья должна быть больше или равна ${minPrice}`;
-  const maxMessage = `Стоимость жилья не должна превышать ${MAX_PRICE}`;
-
-  checkValueField(priceInput, valueField, minPrice, MAX_PRICE, minMessage, maxMessage);
-});
-
-timeIn.addEventListener('change', () => {
-  changeValue(timeIn, timeOut);
-});
-
-timeOut.addEventListener('change', () => {
-  changeValue(timeOut, timeIn);
-});
-
-roomsNumber.addEventListener('change', (evt)=> {
-  const roomsNumberValue = evt.target.value;
-  const capacityList = rooms[roomsNumberValue];
-  const capacityOptions = capacity.querySelectorAll('option');
+const setOptionsCapacityField = (value)=> {
+  const capacityList = rooms[value];
+  const capacityOptions = capacityField.querySelectorAll('option');
 
   capacityOptions.forEach((item)=> {
     item.remove();
@@ -142,7 +86,7 @@ roomsNumber.addEventListener('change', (evt)=> {
 
   capacityList.forEach((item)=> {
     let capacityText = `для ${item} ${declinationOfNum(item, GUESTS_DICT)}`;
-    if (roomsNumberValue === '100') {
+    if (value === '100') {
       capacityText = 'не для гостей';
     }
 
@@ -150,22 +94,72 @@ roomsNumber.addEventListener('change', (evt)=> {
     newOption.value = item;
     newOption.textContent = capacityText;
 
-    capacity.appendChild(newOption);
+    capacityField.appendChild(newOption);
   });
-  toggleSelected(roomsNumberOptions, evt.target);
-  toggleSelected(capacityOptionsList, capacity);
+};
+
+const setValuePriceField = (price)=> {
+  priceField.setAttribute('min', price);
+  priceField.setAttribute('placeholder', price);
+};
+
+titleField.addEventListener('invalid', () => {
+  checkFillField(titleField);
 });
 
-capacity.addEventListener('change', (evt)=> {
-  capacityOptionsList = capacity.querySelectorAll('option');
-  toggleSelected(capacityOptionsList, evt.target);
+titleField.addEventListener('input', () => {
+  const valueField = titleField.value.length;
+  const minMessage = `Ещё ${  MIN_TITLE_LENGTH - valueField } симв.`;
+  const maxMessage = `Удалите лишние ${  valueField - MAX_TITLE_LENGTH } симв.`;
+  checkValueField(titleField, valueField, MIN_TITLE_LENGTH, MAX_TITLE_LENGTH, minMessage, maxMessage);
 });
 
-const getInputAddress = ()=> address;
+typeField.addEventListener('change', (evt) => {
+  const typeValue = evt.target.value;
+  const minPrice = prices[typeValue];
+
+  setValuePriceField(minPrice);
+});
+
+priceField.addEventListener('invalid', () => {
+  checkFillField(priceField);
+});
+
+priceField.addEventListener('input', () => {
+  const valueField = priceField.value;
+  const minPrice = +priceField.getAttribute('min');
+  const minMessage = `Стоимость жилья должна быть больше или равна ${minPrice}`;
+  const maxMessage = `Стоимость жилья не должна превышать ${MAX_PRICE}`;
+
+  checkValueField(priceField, valueField, minPrice, MAX_PRICE, minMessage, maxMessage);
+});
+
+timeInField.addEventListener('change', () => {
+  changeValue(timeInField, timeOutField);
+});
+
+timeOutField.addEventListener('change', () => {
+  changeValue(timeOutField, timeInField);
+});
+
+roomsField.addEventListener('change', (evt)=> {
+  const roomsFieldValue = evt.target.value;
+  setOptionsCapacityField(roomsFieldValue);
+});
+
+const getAddressField = ()=> addressField;
 
 const setAdFormSubmit = (onSuccess, onFail) => {
-  formButtonSubmit.addEventListener('click', (evt)=> {
+  submitBtn.addEventListener('click', (evt)=> {
     evt.preventDefault();
+
+    const fields = adForm.querySelectorAll('input');
+
+    for (let index = 0; index < fields.length; index ++) {
+      if (!fields[index].checkValidity()) {
+        return;
+      }
+    }
 
     sendData(
       () => onSuccess(),
@@ -177,4 +171,10 @@ const setAdFormSubmit = (onSuccess, onFail) => {
 
 const getResetBtn = ()=> resetBtn;
 
-export {setDefaultAddress, getInputAddress, setAdFormSubmit, getResetBtn};
+const setDefaultValues = (addr)=> {
+  addressField.value = addr;
+  setValuePriceField(prices[defaultValues.type]);
+  setOptionsCapacityField(defaultValues.capacity);
+};
+
+export {getAddressField, setAdFormSubmit, getResetBtn, setDefaultValues};
