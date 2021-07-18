@@ -121,7 +121,7 @@ typeField.addEventListener('change', (evt) => {
   setValuePriceField(minPrice);
 
   if (priceField.value.length !== 0 && !priceField.checkValidity()) {
-    addInvalidClass(priceField)
+    addInvalidClass(priceField);
   }
 });
 
