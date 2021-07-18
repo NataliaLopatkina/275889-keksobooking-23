@@ -1,6 +1,6 @@
 const ALERT_SHOW_TIME = 5000;
 
-const declinationOfNum = (num, dict)=> {
+const getDeclinationOfNum = (num, dict)=> {
   if (num % 10 === 1 && num % 100 !== 11) {
     return dict.single;
   } else if (num % 10 >= 2 && num % 10 <= 4 && (num % 100 < 10 || num % 100 >= 20)) {
@@ -40,4 +40,4 @@ const debounce = (callback, timeoutDelay = 500)=> {
   };
 };
 
-export {declinationOfNum, showAlert, isEscEvent, debounce};
+export {getDeclinationOfNum, showAlert, isEscEvent, debounce};

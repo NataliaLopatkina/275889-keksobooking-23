@@ -21,7 +21,7 @@ const comparePrice = (price)=> {
   return valuePrice;
 };
 
-const getCheckedFeatures = ()=> Array.from(document.querySelectorAll('.map__checkbox:checked')).map((chkbx) => chkbx.value);
+const getCheckedFeatures = ()=> Array.from(document.querySelectorAll('.map__checkbox:checked')).map((checkbox) => checkbox.value);
 
 const isContainFeatures = (elements1, elements2)=> {
   if (elements1.length === 0) {
@@ -45,11 +45,11 @@ const compareAdvertisements = (advertisementA, advertisementB)=> {
   return rankB - rankA;
 };
 
-const getSimilarAdvertisements = (array)=> {
+const getSimilarAdvertisements = (advertisements)=> {
   const newArrayAdvertisements = [];
 
-  for (let index = 0; index < array.length; index++) {
-    const itemOffer = array[index].offer;
+  for (let index = 0; index < advertisements.length; index++) {
+    const itemOffer = advertisements[index].offer;
 
     if (itemOffer.type !== typeFilter.value && typeFilter.value !== 'any') {
       continue;
@@ -65,7 +65,7 @@ const getSimilarAdvertisements = (array)=> {
       continue;
     }
 
-    newArrayAdvertisements.push(array[index]);
+    newArrayAdvertisements.push(advertisements[index]);
   }
 
   return newArrayAdvertisements.slice().sort(compareAdvertisements);

@@ -1,5 +1,11 @@
-import {declinationOfNum} from './utils.js';
+import {getDeclinationOfNum} from './utils.js';
 import {sendData} from './api.js';
+
+const GUESTS_DICT = {
+  single: 'гостя',
+  several: 'гостей',
+  many: 'гостей',
+};
 
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
@@ -16,12 +22,6 @@ const adForm = document.querySelector('.ad-form');
 const submitBtn = document.querySelector('.ad-form__submit');
 const resetBtn = document.querySelector('.ad-form__reset');
 
-const GUESTS_DICT = {
-  single: 'гостя',
-  several: 'гостей',
-  many: 'гостей',
-};
-
 const prices = {
   'bungalow': 0,
   'flat': 1000,
@@ -30,7 +30,7 @@ const prices = {
   'palace': 10000,
 };
 
-const rooms = {
+const guestsInRooms = {
   '1': [1],
   '2': [2, 1],
   '3': [3, 2, 1],
@@ -77,21 +77,21 @@ const changeValue = (field, relatedField) => {
 };
 
 const setOptionsCapacityField = (value)=> {
-  const capacityList = rooms[value];
-  const capacityOptions = capacityField.querySelectorAll('option');
+  const rooms = guestsInRooms[value];
+  const options = capacityField.querySelectorAll('option');
 
-  capacityOptions.forEach((item)=> {
-    item.remove();
+  options.forEach((option)=> {
+    option.remove();
   });
 
-  capacityList.forEach((item)=> {
-    let capacityText = `для ${item} ${declinationOfNum(item, GUESTS_DICT)}`;
+  rooms.forEach((room)=> {
+    let capacityText = `для ${room} ${getDeclinationOfNum(room, GUESTS_DICT)}`;
     if (value === '100') {
       capacityText = 'не для гостей';
     }
 
     const newOption = document.createElement('option');
-    newOption.value = item;
+    newOption.value = room;
     newOption.textContent = capacityText;
 
     capacityField.appendChild(newOption);
@@ -119,6 +119,10 @@ typeField.addEventListener('change', (evt) => {
   const minPrice = prices[typeValue];
 
   setValuePriceField(minPrice);
+
+  if (priceField.value.length !== 0 && !priceField.checkValidity()) {
+    addInvalidClass(priceField);
+  }
 });
 
 priceField.addEventListener('invalid', () => {
