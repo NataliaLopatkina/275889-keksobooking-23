@@ -1,4 +1,4 @@
-import {declinationOfNum} from './utils.js';
+import {getDeclinationOfNum} from './utils.js';
 
 const createSimilarAdvertisement = (advertisement)=> {
   const ROOMS_DICT = {
@@ -38,8 +38,8 @@ const createSimilarAdvertisement = (advertisement)=> {
   };
 
   const offer = advertisement.offer;
-  const textRooms = declinationOfNum(offer.rooms, ROOMS_DICT);
-  const textGuests = declinationOfNum(offer.guests, GUESTS_DICT);
+  const textRooms = getDeclinationOfNum(offer.rooms, ROOMS_DICT);
+  const textGuests = getDeclinationOfNum(offer.guests, GUESTS_DICT);
 
   fillContent('.popup__title', offer.title);
   fillContent('.popup__text--address', offer.address);
