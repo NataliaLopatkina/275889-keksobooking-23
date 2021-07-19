@@ -22,32 +22,32 @@ const initMessages = () => {
   errMsgBlock = createErrorMsg();
 };
 
-const hideErrMessage = (evt) => {
+const onErrMessageHide = (evt) => {
   if (isEscEvent || evt.target === errMsgBlock) {
     evt.preventDefault();
     errMsgBlock.classList.add('hidden');
-    document.removeEventListener('keydown', hideErrMessage);
+    document.removeEventListener('keydown', onErrMessageHide);
   }
 };
 
-const hideSuccessMessage = (evt) => {
+const onSuccessMessageHide = (evt) => {
   if (isEscEvent || evt.target === successMsgBlock) {
     evt.preventDefault();
     successMsgBlock.classList.add('hidden');
-    document.removeEventListener('keydown', hideSuccessMessage);
+    document.removeEventListener('keydown', onSuccessMessageHide);
   }
 };
 
 const showErrMsg = ()=> {
   errMsgBlock.classList.remove('hidden');
-  document.addEventListener('keydown', hideErrMessage);
-  errMsgBlock.addEventListener('click', hideErrMessage);
+  document.addEventListener('keydown', onErrMessageHide);
+  errMsgBlock.addEventListener('click', onErrMessageHide);
 };
 
 const showSuccessMsg = ()=> {
   successMsgBlock.classList.remove('hidden');
-  document.addEventListener('keydown', hideSuccessMessage);
-  successMsgBlock.addEventListener('click', hideSuccessMessage);
+  document.addEventListener('keydown', onSuccessMessageHide);
+  successMsgBlock.addEventListener('click', onSuccessMessageHide());
 };
 
 export {initMessages, showErrMsg, showSuccessMsg};

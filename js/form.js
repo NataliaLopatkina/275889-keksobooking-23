@@ -1,6 +1,7 @@
 import {getDeclinationOfNum} from './utils.js';
 import {sendData} from './api.js';
 
+const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 const GUESTS_DICT = {
   single: 'гостя',
   several: 'гостей',
@@ -21,6 +22,10 @@ const capacityField = document.querySelector('#capacity');
 const adForm = document.querySelector('.ad-form');
 const submitBtn = document.querySelector('.ad-form__submit');
 const resetBtn = document.querySelector('.ad-form__reset');
+const avatarChooser = document.querySelector('.ad-form__field input[type=file]');
+const avatarPreview = document.querySelector('.ad-form-header__preview img');
+const photoChooser = document.querySelector('.ad-form__upload input[type=file]');
+const photoPreview = document.querySelector('.ad-form__photo');
 
 const prices = {
   'bungalow': 0,
@@ -174,6 +179,38 @@ const setAdFormSubmit = (onSuccess, onFail) => {
 };
 
 const getResetBtn = ()=> resetBtn;
+
+const setPreview = (chooser, preview) => {
+  const file = chooser.files[0];
+  const fileName = file.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((it) => {
+    return fileName.endsWith(it);
+  });
+
+  if (matches) {
+    const reader = new FileReader();
+
+    reader.addEventListener('load', () => {
+      if (preview.hasAttribute('src')) {
+        preview.src = reader.result;
+      } else {
+        preview.style.background = `url('${reader.result}')`;
+        preview.style.backgroundSize = 'contain';
+      }
+    });
+
+    reader.readAsDataURL(file);
+  }
+};
+
+avatarChooser.addEventListener('change', () => {
+  setPreview(avatarChooser, avatarPreview);
+});
+
+photoChooser.addEventListener('change', () => {
+  setPreview(photoChooser, photoPreview);
+});
 
 const setDefaultValues = (addr)=> {
   addressField.value = addr;
