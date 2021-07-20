@@ -194,12 +194,6 @@ const setPreview = (chooser, preview) => {
       if (preview.hasAttribute('src')) {
         preview.src = reader.result;
       } else {
-        // const image = document.createElement('img');
-        // image.setAttribute('src', `${reader.result}`);
-        // image.setAttribute('width','70');
-        // image.setAttribute('height', '70');
-        // preview.appendChild(image);
-
         preview.style.background = `url('${reader.result}') no-repeat center/cover`;
       }
     });
