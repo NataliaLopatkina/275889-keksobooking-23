@@ -1,12 +1,12 @@
 import {getDeclinationOfNum} from './utils.js';
 import {sendData} from './api.js';
 
+const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 const GUESTS_DICT = {
   single: 'гостя',
   several: 'гостей',
   many: 'гостей',
 };
-
 const MIN_TITLE_LENGTH = 30;
 const MAX_TITLE_LENGTH = 100;
 const MAX_PRICE = 1000000;
@@ -21,6 +21,10 @@ const capacityField = document.querySelector('#capacity');
 const adForm = document.querySelector('.ad-form');
 const submitBtn = document.querySelector('.ad-form__submit');
 const resetBtn = document.querySelector('.ad-form__reset');
+const avatarChooser = document.querySelector('.ad-form__field input[type=file]');
+const avatarPreview = document.querySelector('.ad-form-header__preview img');
+const photoChooser = document.querySelector('.ad-form__upload input[type=file]');
+const photoPreview = document.querySelector('.ad-form__photo');
 
 const prices = {
   'bungalow': 0,
@@ -122,6 +126,8 @@ typeField.addEventListener('change', (evt) => {
 
   if (priceField.value.length !== 0 && !priceField.checkValidity()) {
     addInvalidClass(priceField);
+  } else {
+    removeInvalidClass(priceField);
   }
 });
 
@@ -175,10 +181,51 @@ const setAdFormSubmit = (onSuccess, onFail) => {
 
 const getResetBtn = ()=> resetBtn;
 
+const setPreview = (chooser, preview) => {
+  const file = chooser.files[0];
+  const fileName = file.name.toLowerCase();
+
+  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+
+  if (matches) {
+    const reader = new FileReader();
+
+    reader.addEventListener('load', () => {
+      if (preview.hasAttribute('src')) {
+        preview.src = reader.result;
+      } else {
+        // const image = document.createElement('img');
+        // image.setAttribute('src', `${reader.result}`);
+        // image.setAttribute('width','70');
+        // image.setAttribute('height', '70');
+        // preview.appendChild(image);
+
+        preview.style.background = `url('${reader.result}') no-repeat center/cover`;
+      }
+    });
+
+    reader.readAsDataURL(file);
+  }
+};
+
+const removePreviews = ()=> {
+  avatarPreview.src = 'img/muffin-grey.svg';
+  photoPreview.style.background = '#e4e4de';
+};
+
+avatarChooser.addEventListener('change', () => {
+  setPreview(avatarChooser, avatarPreview);
+});
+
+photoChooser.addEventListener('change', () => {
+  setPreview(photoChooser, photoPreview);
+});
+
 const setDefaultValues = (addr)=> {
   addressField.value = addr;
   setValuePriceField(prices[defaultValues.type]);
   setOptionsCapacityField(defaultValues.capacity);
+  removePreviews();
 };
 
 export {getAddressField, setAdFormSubmit, getResetBtn, setDefaultValues};

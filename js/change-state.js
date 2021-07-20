@@ -5,21 +5,21 @@ const adForm = document.querySelector('.ad-form');
 const filters = document.querySelector('.map__filters');
 
 const disableForm = (form) => {
-  const children = form.children;
+  const children = Array.from(form.children);
   form.classList.add('ad-form--disabled');
 
-  for (let index = 0; index < children.length; index++) {
-    children[index].disabled = true;
-  }
+  children.forEach((item) => {
+    item.disabled = true;
+  });
 };
 
 const enableForm = (form) => {
-  const children = form.children;
+  const children = Array.from(form.children);
   form.classList.remove('ad-form--disabled');
 
-  for (let index = 0; index < children.length; index++) {
-    children[index].disabled = false;
-  }
+  children.forEach((item) => {
+    item.disabled = false;
+  });
 };
 
 const addInactiveState = () => {

@@ -36,7 +36,7 @@ const isContainFeatures = (elements1, elements2)=> {
   return true;
 };
 
-const getAdvertisimentRank = (advertisement)=> {return Array.isArray(advertisement.offer.features) ? advertisement.offer.features.length : 0;}
+const getAdvertisimentRank = (advertisement)=> Array.isArray(advertisement.offer.features) ? advertisement.offer.features.length : 0;
 
 const compareAdvertisements = (advertisementA, advertisementB)=> {
   const rankA = getAdvertisimentRank(advertisementA);
